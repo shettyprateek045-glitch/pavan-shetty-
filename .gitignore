@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Ultralytics runs and artifacts
+runs/
+*.cache
+*.labels
+*.weights
+
+# Datasets (prevent accidentally pushing large datasets)
+dataset/
+datasets/
+test/
+train/
+valid/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
