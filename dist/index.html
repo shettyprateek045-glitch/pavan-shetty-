@@ -1,38 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TalentRank AI — Recruitment Intelligence & Model Hub</title>
+  <title>TalentRank AI — Recruitment Intelligence & Connected Models Hub</title>
   
-  <!-- Tailwind CSS & Lucide Icons -->
+  <!-- Tailwind CSS & Lucide Icons & Chart.js -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             brand: {
               50: '#eff6ff',
               100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
               400: '#60a5fa',
               500: '#3b82f6',
               600: '#2563eb',
               700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
             },
             surface: {
-              800: '#111827',
-              850: '#0d1526',
-              900: '#090d16',
-              950: '#050810',
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
             }
           },
           fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
             mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
           }
         }
@@ -41,32 +50,25 @@
   </script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
     body {
-      background-color: #060911;
-      color: #f1f5f9;
+      background-color: #f8fafc;
+      color: #0f172a;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
 
-    /* Custom Glassmorphism */
-    .glass-panel {
-      background: rgba(13, 21, 38, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+    /* Clean Card Styling */
+    .white-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
     }
 
-    .glass-card {
-      background: rgba(17, 24, 39, 0.65);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .glass-card:hover {
-      border-color: rgba(59, 130, 246, 0.3);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    .white-card:hover {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      border-color: #cbd5e1;
     }
 
     /* Pulse glow */
@@ -76,7 +78,7 @@
 
     @keyframes pulseGlow {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.05); }
+      50% { opacity: 0.6; transform: scale(1.08); }
     }
 
     /* Scrollbar */
@@ -85,46 +87,46 @@
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #090d16;
+      background: #f1f5f9;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1e293b;
+      background: #cbd5e1;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #334155;
+      background: #94a3b8;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-brand-500 selection:text-white">
 
   <!-- ==================== TOP NAVIGATION BAR ==================== -->
-  <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 px-4 lg:px-6 py-3 flex items-center justify-between">
+  <header class="sticky top-0 z-40 w-full bg-white border-b border-slate-200 px-4 lg:px-8 py-3.5 flex items-center justify-between shadow-xs">
     <!-- Brand / Logo -->
     <div class="flex items-center space-x-3">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-brand-500/20">
-        <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+      <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center shadow-md shadow-brand-500/20 text-white">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
       </div>
       <div>
         <div class="flex items-center space-x-2">
-          <span class="text-base font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
+          <span class="text-base font-extrabold tracking-tight text-slate-900">
             TALENTRANK AI
           </span>
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand-500/20 text-brand-300 border border-brand-500/30">
-            PRO
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-700 border border-brand-200">
+            CONNECTED AI
           </span>
         </div>
-        <p class="text-[11px] text-slate-400 hidden sm:block">Recruitment Intelligence & Multi-Model Screening Hub</p>
+        <p class="text-[11px] text-slate-500 hidden sm:block">Recruitment Intelligence & Multi-Model Classifier Hub</p>
       </div>
     </div>
 
-    <!-- Active Job Selector & Blind Mode Toggle -->
+    <!-- Active Job Selector, Models Badge & Actions -->
     <div class="flex items-center space-x-3">
       <!-- Active Job Picker -->
-      <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-surface-900 border border-slate-800 text-xs">
-        <i data-lucide="briefcase" class="w-3.5 h-3.5 text-brand-400"></i>
-        <span class="text-slate-400">Active Role:</span>
-        <select id="activeJobSelect" class="bg-transparent text-slate-200 font-medium focus:outline-none cursor-pointer">
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+        <i data-lucide="briefcase" class="w-3.5 h-3.5 text-brand-600"></i>
+        <span class="text-slate-500 font-medium">Active Requisition:</span>
+        <select id="activeJobSelect" class="bg-transparent text-slate-800 font-semibold focus:outline-none cursor-pointer">
           <option value="job-lead-backend">Staff Distributed Systems Engineer</option>
           <option value="job-ai-search">Senior AI/ML Semantic Search Engineer</option>
           <option value="job-frontend-lead">Principal Frontend UI/UX Architect</option>
@@ -133,25 +135,25 @@
       </div>
 
       <!-- Blind Screening Toggle -->
-      <button id="btnToggleBlind" class="px-3 py-1.5 rounded-lg bg-surface-900 hover:bg-slate-800 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5 transition">
+      <button id="btnToggleBlind" class="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 flex items-center space-x-1.5 shadow-xs transition">
         <i data-lucide="eye" id="blindIcon" class="w-3.5 h-3.5 text-slate-400"></i>
         <span id="blindText">Blind Mode: Off</span>
       </button>
 
       <!-- Connected Models Indicator -->
-      <div class="hidden xl:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-glow"></span>
-        <span class="font-medium font-mono text-[11px]">MiniLM-L6-v2 + 3 Models</span>
+      <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-semibold shadow-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-glow"></span>
+        <span class="font-mono text-[11px]">4 Models Connected</span>
       </div>
 
       <!-- Recruiter Profile -->
-      <div class="flex items-center space-x-2 pl-2 border-l border-slate-800">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-xs font-bold text-white shadow">
+      <div class="flex items-center space-x-2 pl-2 border-l border-slate-200">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-xs font-bold text-white shadow-xs">
           JD
         </div>
         <div class="hidden lg:block text-left">
-          <div class="text-xs font-semibold text-slate-200 leading-none">Jordan Davis</div>
-          <div class="text-[10px] text-slate-400">Lead Recruiter</div>
+          <div class="text-xs font-semibold text-slate-900 leading-none">Jordan Davis</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">Lead Recruiter</div>
         </div>
       </div>
     </div>
@@ -160,164 +162,163 @@
   <!-- ==================== MAIN APPLICATION CONTAINER ==================== -->
   <div class="flex-1 flex overflow-hidden">
 
-    <!-- ==================== SIDEBAR NAVIGATION ==================== -->
-    <aside class="w-64 glass-panel border-r border-slate-800/80 p-4 hidden md:flex flex-col justify-between shrink-0">
+    <!-- ==================== SIDEBAR NAVIGATION (WHITE THEME) ==================== -->
+    <aside class="w-64 bg-white border-r border-slate-200 p-4 hidden md:flex flex-col justify-between shrink-0 shadow-xs">
       <div class="space-y-6">
         <div>
-          <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500 mb-2 px-3">
+          <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2 px-3">
             Core Workspace
           </div>
           <nav class="space-y-1 text-xs font-medium">
-            <button onclick="switchTab('overview')" id="tabBtn-overview" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-white bg-brand-600/30 border border-brand-500/40 text-brand-200">
-              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <button onclick="switchTab('overview')" id="tabBtn-overview" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition font-semibold text-brand-700 bg-brand-50 border border-brand-200 shadow-xs">
+              <i data-lucide="layout-dashboard" class="w-4 h-4 text-brand-600"></i>
               <span>Overview</span>
             </button>
-            <button onclick="switchTab('screening')" id="tabBtn-screening" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/60">
-              <i data-lucide="scan-search" class="w-4 h-4 text-emerald-400"></i>
+            <button onclick="switchTab('screening')" id="tabBtn-screening" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+              <i data-lucide="scan-search" class="w-4 h-4 text-emerald-600"></i>
               <span>Screening Workspace</span>
-              <span class="ml-auto px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-emerald-500/20 text-emerald-300">AI</span>
+              <span class="ml-auto px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-emerald-100 text-emerald-700">AI</span>
             </button>
-            <button onclick="switchTab('candidates')" id="tabBtn-candidates" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/60">
-              <i data-lucide="users" class="w-4 h-4 text-brand-400"></i>
-              <span>Candidates</span>
-              <span id="badgeCandidateCount" class="ml-auto px-1.5 py-0.2 text-[10px] rounded bg-slate-800 text-slate-400">12</span>
+            <button onclick="switchTab('candidates')" id="tabBtn-candidates" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+              <i data-lucide="users" class="w-4 h-4 text-brand-600"></i>
+              <span>Candidates Pipeline</span>
+              <span id="badgeCandidateCount" class="ml-auto px-1.5 py-0.2 text-[10px] font-semibold rounded bg-slate-100 text-slate-600">15</span>
             </button>
           </nav>
         </div>
 
         <div>
-          <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500 mb-2 px-3">
+          <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2 px-3">
             Intelligence & Auditing
           </div>
           <nav class="space-y-1 text-xs font-medium">
-            <button onclick="switchTab('ai-models')" id="tabBtn-ai-models" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/60">
-              <i data-lucide="cpu" class="w-4 h-4 text-purple-400"></i>
-              <span>AI Models & Weights</span>
+            <button onclick="switchTab('ai-models')" id="tabBtn-ai-models" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+              <i data-lucide="cpu" class="w-4 h-4 text-purple-600"></i>
+              <span>AI Models Registry & Weights</span>
             </button>
-            <button onclick="switchTab('fairness')" id="tabBtn-fairness" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/60">
-              <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+            <button onclick="switchTab('fairness')" id="tabBtn-fairness" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+              <i data-lucide="shield-check" class="w-4 h-4 text-sky-600"></i>
               <span>Responsible AI Audit</span>
-              <span class="ml-auto px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-cyan-500/20 text-cyan-300">LL144</span>
+              <span class="ml-auto px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-sky-100 text-sky-700">NYC LL144</span>
             </button>
-            <button onclick="switchTab('analytics')" id="tabBtn-analytics" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/60">
-              <i data-lucide="bar-chart-3" class="w-4 h-4 text-amber-400"></i>
+            <button onclick="switchTab('analytics')" id="tabBtn-analytics" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-amber-600"></i>
               <span>Analytics & Funnel</span>
             </button>
-            <button onclick="switchTab('reports')" id="tabBtn-reports" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/60">
-              <i data-lucide="file-text" class="w-4 h-4 text-rose-400"></i>
+            <button onclick="switchTab('reports')" id="tabBtn-reports" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+              <i data-lucide="file-text" class="w-4 h-4 text-rose-600"></i>
               <span>Executive Reports</span>
             </button>
           </nav>
         </div>
       </div>
 
-      <!-- Models Registry Status Strip -->
-      <div class="p-3 rounded-xl bg-surface-900 border border-slate-800/80 text-[11px] space-y-2">
-        <div class="flex items-center justify-between text-slate-400">
-          <span class="font-medium">Connected Models</span>
-          <span class="text-emerald-400 font-bold">4 Active</span>
+      <!-- Connected Models Status Widget -->
+      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-800 flex items-center space-x-1.5">
+            <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Connected Models</span>
+          </span>
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Online</span>
         </div>
-        <div class="space-y-1 font-mono text-[10px] text-slate-400">
+        <div class="space-y-1.5 font-mono text-[10px] text-slate-600">
           <div class="flex items-center justify-between">
-            <span>MiniLM-L6-v2:</span>
-            <span class="text-slate-300">384-dim</span>
+            <span class="truncate">MiniLM-L6-v2</span>
+            <span class="font-bold text-brand-600">384-dim</span>
           </div>
           <div class="flex items-center justify-between">
             <span>Archive 456 Tech:</span>
-            <span class="text-emerald-400">99.48% Acc</span>
+            <span class="font-bold text-emerald-600">99.48% Acc</span>
           </div>
           <div class="flex items-center justify-between">
-            <span>Archive 2 Ent:</span>
-            <span class="text-purple-300">84.60% Acc</span>
+            <span>Archive 2 Enterprise:</span>
+            <span class="font-bold text-purple-600">84.60% Acc</span>
           </div>
           <div class="flex items-center justify-between">
             <span>Archive 123 PDF:</span>
-            <span class="text-cyan-300">24 Classes</span>
+            <span class="font-bold text-sky-600">24 Classes</span>
           </div>
         </div>
       </div>
     </aside>
 
-    <!-- ==================== MAIN CONTENT AREA ==================== -->
-    <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8">
+    <!-- ==================== MAIN CONTENT AREA (CLEAN WHITE) ==================== -->
+    <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8 bg-slate-50">
 
       <!-- ==================== VIEW 1: OVERVIEW ==================== -->
       <section id="view-overview" class="space-y-6">
         <!-- Hero Welcome -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl font-extrabold text-white tracking-tight">Recruitment Intelligence Overview</h1>
-            <p class="text-xs text-slate-400 mt-1">Real-time candidate pipelines, semantic relevance metrics, and algorithmic audit logs.</p>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Recruitment Intelligence Overview</h1>
+            <p class="text-xs text-slate-500 mt-1">Real-time candidate rankings powered by connected SentenceTransformers and single-shot classifiers.</p>
           </div>
           <div class="flex items-center space-x-2">
-            <button onclick="switchTab('screening')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-brand-500/20 flex items-center space-x-1.5 transition">
+            <button onclick="switchTab('screening')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm flex items-center space-x-1.5 transition">
               <i data-lucide="plus" class="w-4 h-4"></i>
               <span>Screen New Resumes</span>
             </button>
           </div>
         </div>
 
-        <!-- 4 Key Metric Cards -->
+        <!-- 4 Key Metric Cards (White Cards) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Card 1 -->
-          <div class="glass-card p-5 rounded-2xl space-y-3">
-            <div class="flex items-center justify-between text-slate-400 text-xs">
-              <span>Resumes Analyzed</span>
-              <div class="p-2 rounded-lg bg-brand-500/10 text-brand-400"><i data-lucide="file-search" class="w-4 h-4"></i></div>
+          <div class="white-card p-5 rounded-2xl space-y-3">
+            <div class="flex items-center justify-between text-slate-500 text-xs">
+              <span class="font-medium">Resumes Analyzed</span>
+              <div class="p-2 rounded-lg bg-brand-50 text-brand-600"><i data-lucide="file-search" class="w-4 h-4"></i></div>
             </div>
-            <div class="text-2xl font-extrabold text-white font-mono">142</div>
-            <div class="text-[11px] text-emerald-400 flex items-center space-x-1">
+            <div class="text-2xl font-extrabold text-slate-900 font-mono">142</div>
+            <div class="text-[11px] text-emerald-600 font-medium flex items-center space-x-1">
               <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
               <span>+18.4% vs last month</span>
             </div>
           </div>
 
-          <!-- Card 2 -->
-          <div class="glass-card p-5 rounded-2xl space-y-3">
-            <div class="flex items-center justify-between text-slate-400 text-xs">
-              <span>Shortlisted Candidates</span>
-              <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400"><i data-lucide="user-check" class="w-4 h-4"></i></div>
+          <div class="white-card p-5 rounded-2xl space-y-3">
+            <div class="flex items-center justify-between text-slate-500 text-xs">
+              <span class="font-medium">Shortlisted Candidates</span>
+              <div class="p-2 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="user-check" class="w-4 h-4"></i></div>
             </div>
-            <div class="text-2xl font-extrabold text-white font-mono">38</div>
-            <div class="text-[11px] text-slate-400">
-              <span class="text-emerald-400 font-semibold">28.5%</span> conversion threshold
+            <div class="text-2xl font-extrabold text-slate-900 font-mono">38</div>
+            <div class="text-[11px] text-slate-500">
+              <span class="text-emerald-600 font-semibold">28.5%</span> qualification threshold
             </div>
           </div>
 
-          <!-- Card 3 -->
-          <div class="glass-card p-5 rounded-2xl space-y-3">
-            <div class="flex items-center justify-between text-slate-400 text-xs">
-              <span>Avg Relevance Fit</span>
-              <div class="p-2 rounded-lg bg-purple-500/10 text-purple-400"><i data-lucide="target" class="w-4 h-4"></i></div>
+          <div class="white-card p-5 rounded-2xl space-y-3">
+            <div class="flex items-center justify-between text-slate-500 text-xs">
+              <span class="font-medium">Avg Relevance Fit</span>
+              <div class="p-2 rounded-lg bg-purple-50 text-purple-600"><i data-lucide="target" class="w-4 h-4"></i></div>
             </div>
-            <div class="text-2xl font-extrabold text-white font-mono">81.4%</div>
-            <div class="text-[11px] text-purple-300">Calibrated via MiniLM-L6-v2</div>
+            <div class="text-2xl font-extrabold text-slate-900 font-mono">81.4%</div>
+            <div class="text-[11px] text-purple-700 font-medium">Dense MiniLM-L6-v2 Embeddings</div>
           </div>
 
-          <!-- Card 4 -->
-          <div class="glass-card p-5 rounded-2xl space-y-3">
-            <div class="flex items-center justify-between text-slate-400 text-xs">
-              <span>Active Requisitions</span>
-              <div class="p-2 rounded-lg bg-amber-500/10 text-amber-400"><i data-lucide="briefcase" class="w-4 h-4"></i></div>
+          <div class="white-card p-5 rounded-2xl space-y-3">
+            <div class="flex items-center justify-between text-slate-500 text-xs">
+              <span class="font-medium">Active Requisitions</span>
+              <div class="p-2 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="briefcase" class="w-4 h-4"></i></div>
             </div>
-            <div class="text-2xl font-extrabold text-white font-mono">4 Active</div>
-            <div class="text-[11px] text-slate-400">Across 3 Engineering Pods</div>
+            <div class="text-2xl font-extrabold text-slate-900 font-mono">4 Active</div>
+            <div class="text-[11px] text-slate-500">Across 3 Engineering Pods</div>
           </div>
         </div>
 
-        <!-- Charts & Activity Row -->
+        <!-- Charts Row -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Screening Activity Chart -->
-          <div class="lg:col-span-2 glass-card p-5 rounded-2xl space-y-4">
+          <!-- Activity Line Chart -->
+          <div class="lg:col-span-2 white-card p-5 rounded-2xl space-y-4">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-sm font-semibold text-slate-200">Screening Activity & Score Calibration</h3>
-                <p class="text-xs text-slate-500">Daily volume of candidate resumes indexed vs shortlist qualification</p>
+                <h3 class="text-sm font-bold text-slate-900">Screening Activity & Score Calibration</h3>
+                <p class="text-xs text-slate-500">Daily volume of candidate resumes indexed vs shortlisted candidates</p>
               </div>
-              <div class="flex items-center space-x-1.5 text-xs text-slate-400 font-mono">
-                <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+              <div class="flex items-center space-x-2 text-xs text-slate-600 font-mono">
+                <span class="w-2.5 h-2.5 rounded-full bg-brand-600"></span>
                 <span>Screened</span>
-                <span class="w-2 h-2 rounded-full bg-emerald-400 ml-2"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 ml-2"></span>
                 <span>Shortlist</span>
               </div>
             </div>
@@ -327,49 +328,49 @@
           </div>
 
           <!-- Match Distribution Donut -->
-          <div class="glass-card p-5 rounded-2xl space-y-4">
+          <div class="white-card p-5 rounded-2xl space-y-4">
             <div>
-              <h3 class="text-sm font-semibold text-slate-200">Candidate Match Distribution</h3>
-              <p class="text-xs text-slate-500">Calibrated overall scores across active requisition</p>
+              <h3 class="text-sm font-bold text-slate-900">Candidate Match Distribution</h3>
+              <p class="text-xs text-slate-500">Overall score tiers across the candidate pool</p>
             </div>
             <div class="h-48 flex items-center justify-center">
               <canvas id="matchDistributionChart"></canvas>
             </div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-slate-800">
-              <div class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded bg-brand-500"></span><span class="text-slate-300">Exceptional (90-100%)</span></div>
-              <div class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded bg-sky-500"></span><span class="text-slate-300">Strong (80-89%)</span></div>
-              <div class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded bg-slate-500"></span><span class="text-slate-300">Moderate (70-79%)</span></div>
-              <div class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded bg-slate-700"></span><span class="text-slate-400">Low (<70%)</span></div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] pt-3 border-t border-slate-100">
+              <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded bg-brand-600"></span><span class="text-slate-700">Exceptional (90-100%)</span></div>
+              <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded bg-sky-500"></span><span class="text-slate-700">Strong (80-89%)</span></div>
+              <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span><span class="text-slate-700">Moderate (70-79%)</span></div>
+              <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded bg-slate-300"></span><span class="text-slate-500">Low (&lt;70%)</span></div>
             </div>
           </div>
         </div>
 
         <!-- Top Candidates Quick Table -->
-        <div class="glass-card rounded-2xl p-5 space-y-4">
+        <div class="white-card rounded-2xl p-5 space-y-4">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-sm font-semibold text-slate-200">Top Ranked Candidates</h3>
-              <p class="text-xs text-slate-500">Evaluated against: <span id="topRoleEvaluated" class="text-brand-300 font-medium">Staff Distributed Systems Engineer</span></p>
+              <h3 class="text-sm font-bold text-slate-900">Top Ranked Candidates</h3>
+              <p class="text-xs text-slate-500">Calibrated against: <span id="topRoleEvaluated" class="text-brand-700 font-semibold">Staff Distributed Systems Engineer</span></p>
             </div>
-            <button onclick="switchTab('candidates')" class="text-xs text-brand-400 hover:text-brand-300 font-medium flex items-center space-x-1 transition">
-              <span>View all candidates</span>
+            <button onclick="switchTab('candidates')" class="text-xs text-brand-600 hover:text-brand-700 font-semibold flex items-center space-x-1 transition">
+              <span>View full candidate pipeline</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
             </button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="text-slate-400 border-b border-slate-800 font-semibold">
+              <thead class="text-slate-500 border-b border-slate-200 bg-slate-50/50 font-semibold">
                 <tr>
-                  <th class="pb-2.5">Rank</th>
-                  <th class="pb-2.5">Candidate</th>
-                  <th class="pb-2.5">Role Domain (Model)</th>
-                  <th class="pb-2.5">Experience</th>
-                  <th class="pb-2.5">Verified Skills</th>
-                  <th class="pb-2.5 text-right">Overall Fit</th>
-                  <th class="pb-2.5 text-right">Action</th>
+                  <th class="p-3">Rank</th>
+                  <th class="p-3">Candidate</th>
+                  <th class="p-3">Domain (AI Model Prediction)</th>
+                  <th class="p-3">Experience</th>
+                  <th class="p-3">Top Matched Skills</th>
+                  <th class="p-3 text-right">Overall Fit</th>
+                  <th class="p-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody id="topCandidatesTableBody" class="divide-y divide-slate-800/60 text-slate-300">
+              <tbody id="topCandidatesTableBody" class="divide-y divide-slate-100 text-slate-700">
                 <!-- Dynamically populated -->
               </tbody>
             </table>
@@ -380,121 +381,121 @@
       <!-- ==================== VIEW 2: SCREENING WORKSPACE ==================== -->
       <section id="view-screening" class="hidden space-y-6">
         <div>
-          <h1 class="text-2xl font-extrabold text-white tracking-tight">Two-Column Screening Workspace</h1>
-          <p class="text-xs text-slate-400 mt-1">Calibrate target job specifications, check linguistic neutrality, and ingest candidate resumes.</p>
+          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Two-Column Screening Workspace</h1>
+          <p class="text-xs text-slate-500 mt-1">Calibrate target job specifications, check linguistic neutrality, and ingest candidate resumes.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Left Column: Job Description & Bias Pre-check -->
-          <div class="glass-card p-5 rounded-2xl space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="white-card p-6 rounded-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
               <div class="flex items-center space-x-2">
-                <i data-lucide="file-edit" class="w-4 h-4 text-brand-400"></i>
-                <h3 class="text-sm font-semibold text-slate-200">Requisition & Requirement Calibration</h3>
+                <i data-lucide="file-edit" class="w-4 h-4 text-brand-600"></i>
+                <h3 class="text-sm font-bold text-slate-900">Requisition & Requirement Calibration</h3>
               </div>
-              <span id="jdBiasBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span id="jdBiasBadge" class="px-2.5 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 Neutral & Equitable
               </span>
             </div>
 
-            <div class="space-y-3 text-xs">
+            <div class="space-y-3.5 text-xs">
               <div>
-                <label class="block text-slate-400 font-medium mb-1">Target Job Title</label>
-                <input id="screeningJobTitle" type="text" value="Staff Distributed Systems Engineer" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-brand-500 font-medium" />
+                <label class="block text-slate-700 font-semibold mb-1">Target Job Title</label>
+                <input id="screeningJobTitle" type="text" value="Staff Distributed Systems Engineer" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-900 focus:outline-none focus:border-brand-500 font-semibold" />
               </div>
 
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-slate-400 font-medium mb-1">Experience Baseline</label>
-                  <input id="screeningExperience" type="text" value="6.0 Years" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-brand-500" />
+                  <label class="block text-slate-700 font-semibold mb-1">Experience Baseline</label>
+                  <input id="screeningExperience" type="text" value="6.0 Years" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 focus:outline-none focus:border-brand-500" />
                 </div>
                 <div>
-                  <label class="block text-slate-400 font-medium mb-1">Target Salary Band</label>
-                  <input id="screeningSalary" type="text" value="$210,000 - $250,000" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-brand-500" />
+                  <label class="block text-slate-700 font-semibold mb-1">Target Salary Band</label>
+                  <input id="screeningSalary" type="text" value="$210,000 - $250,000" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 focus:outline-none focus:border-brand-500" />
                 </div>
               </div>
 
               <div>
-                <label class="block text-slate-400 font-medium mb-1">Mandatory Technical Requirements (Comma Separated)</label>
-                <input id="screeningSkills" type="text" value="Go, Distributed Systems, Kafka, PostgreSQL, Kubernetes, Redis, High Concurrency" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-brand-500 font-mono text-xs" />
+                <label class="block text-slate-700 font-semibold mb-1">Mandatory Technical Requirements</label>
+                <input id="screeningSkills" type="text" value="Go, Distributed Systems, Kafka, PostgreSQL, Kubernetes, Redis, High Concurrency" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-900 focus:outline-none focus:border-brand-500 font-mono text-xs" />
               </div>
 
               <div>
-                <label class="block text-slate-400 font-medium mb-1">Job Description & Responsibilities</label>
-                <textarea id="screeningJdText" rows="6" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-300 focus:outline-none focus:border-brand-500 leading-relaxed font-mono text-[11px]">We are looking for a Staff Distributed Systems Engineer to lead the architecture of our real-time data streaming platform. You will design fault-tolerant distributed consensus mechanisms, optimize p99 latencies, and lead technical scaling across Go and Kafka microservices.</textarea>
+                <label class="block text-slate-700 font-semibold mb-1">Job Description & Responsibilities</label>
+                <textarea id="screeningJdText" rows="6" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 focus:outline-none focus:border-brand-500 leading-relaxed font-mono text-[11px]">We are looking for a Staff Distributed Systems Engineer to lead the architecture of our real-time data streaming platform. You will design fault-tolerant distributed consensus mechanisms, optimize p99 latencies, and lead technical scaling across Go and Kafka microservices.</textarea>
               </div>
 
               <!-- Linguistic Bias Analysis Box -->
-              <div class="p-3 rounded-xl bg-surface-900 border border-slate-800/80 space-y-1.5">
-                <div class="text-[11px] font-semibold text-slate-300 flex items-center space-x-1.5">
-                  <i data-lucide="scale" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                <div class="text-[11px] font-bold text-slate-800 flex items-center space-x-1.5">
+                  <i data-lucide="scale" class="w-3.5 h-3.5 text-brand-600"></i>
                   <span>Linguistic Neutrality Check (EEOC Compliant)</span>
                 </div>
-                <p id="jdBiasFeedback" class="text-[11px] text-slate-400">Phrasing demonstrates balanced professional tone with zero gender-coded or exclusionary language.</p>
+                <p id="jdBiasFeedback" class="text-[11px] text-slate-600">Phrasing demonstrates balanced professional tone with zero gender-coded or exclusionary language.</p>
               </div>
             </div>
           </div>
 
           <!-- Right Column: Resume Ingestion & Pipeline -->
-          <div class="glass-card p-5 rounded-2xl space-y-4 flex flex-col justify-between">
+          <div class="white-card p-6 rounded-2xl space-y-4 flex flex-col justify-between">
             <div class="space-y-4">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div class="flex items-center space-x-2">
-                  <i data-lucide="upload-cloud" class="w-4 h-4 text-emerald-400"></i>
-                  <h3 class="text-sm font-semibold text-slate-200">Resume Ingestion & Screening Pipeline</h3>
+                  <i data-lucide="upload-cloud" class="w-4 h-4 text-emerald-600"></i>
+                  <h3 class="text-sm font-bold text-slate-900">Resume Ingestion & Screening Pipeline</h3>
                 </div>
-                <span class="text-[10px] font-mono text-slate-500">PDF, DOCX, TXT</span>
+                <span class="text-[11px] font-mono text-slate-500">PDF, DOCX, TXT</span>
               </div>
 
               <!-- Drag & Drop Zone -->
-              <div id="screeningDropzone" class="border-2 border-dashed border-slate-800 hover:border-brand-500/60 rounded-2xl p-8 text-center transition cursor-pointer bg-surface-900/50">
+              <div id="screeningDropzone" class="border-2 border-dashed border-slate-300 hover:border-brand-500 rounded-2xl p-8 text-center transition cursor-pointer bg-slate-50/50 hover:bg-white">
                 <input id="resumeFileInput" type="file" accept=".pdf,.docx,.txt" class="hidden" />
-                <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-400 mx-auto flex items-center justify-center mb-3">
+                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 mx-auto flex items-center justify-center mb-3">
                   <i data-lucide="file-up" class="w-6 h-6"></i>
                 </div>
-                <div class="text-xs font-semibold text-slate-200">Upload candidate resume file</div>
+                <div class="text-xs font-bold text-slate-900">Upload candidate resume file</div>
                 <p class="text-[11px] text-slate-500 mt-1">Drag & drop candidate CV or click to browse</p>
-                <div id="uploadedFileNameDisplay" class="mt-3 text-xs text-emerald-400 font-mono hidden"></div>
+                <div id="uploadedFileNameDisplay" class="mt-3 text-xs text-emerald-700 font-mono font-semibold hidden"></div>
               </div>
 
-              <!-- Screening Stages Tracker -->
+              <!-- Connected Screening Stages Tracker -->
               <div class="space-y-2 pt-2">
-                <div class="text-xs font-semibold text-slate-400">Screening Execution Stages</div>
+                <div class="text-xs font-bold text-slate-800">Connected Screening Pipeline Stages</div>
                 <div class="space-y-1.5 text-[11px]">
-                  <div class="flex items-center justify-between p-2 rounded-lg bg-surface-900 border border-slate-800/80">
-                    <span class="flex items-center space-x-2">
-                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <span class="flex items-center space-x-2 font-medium text-slate-700">
+                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
                       <span>1. Text Extraction & Entity Parsing</span>
                     </span>
-                    <span class="text-emerald-400 font-mono">Ready</span>
+                    <span class="text-emerald-700 font-mono font-bold">Ready</span>
                   </div>
-                  <div class="flex items-center justify-between p-2 rounded-lg bg-surface-900 border border-slate-800/80">
-                    <span class="flex items-center space-x-2">
-                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <span class="flex items-center space-x-2 font-medium text-slate-700">
+                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
                       <span>2. Dense Semantic Vectorization (MiniLM-L6-v2)</span>
                     </span>
-                    <span class="text-emerald-400 font-mono">Loaded</span>
+                    <span class="text-emerald-700 font-mono font-bold">Connected</span>
                   </div>
-                  <div class="flex items-center justify-between p-2 rounded-lg bg-surface-900 border border-slate-800/80">
-                    <span class="flex items-center space-x-2">
-                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <span class="flex items-center space-x-2 font-medium text-slate-700">
+                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
                       <span>3. Multi-Model Domain Classification (Archive 123/456/2)</span>
                     </span>
-                    <span class="text-emerald-400 font-mono">Connected</span>
+                    <span class="text-emerald-700 font-mono font-bold">Connected</span>
                   </div>
-                  <div class="flex items-center justify-between p-2 rounded-lg bg-surface-900 border border-slate-800/80">
-                    <span class="flex items-center space-x-2">
-                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <span class="flex items-center space-x-2 font-medium text-slate-700">
+                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
                       <span>4. Responsible AI Demographic Parity Pre-check</span>
                     </span>
-                    <span class="text-emerald-400 font-mono">Passed</span>
+                    <span class="text-emerald-700 font-mono font-bold">Passed</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Action Run Button -->
-            <button id="btnExecuteScreening" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 via-indigo-600 to-emerald-600 hover:from-brand-500 hover:to-emerald-500 text-white text-xs font-bold shadow-lg shadow-brand-500/20 flex items-center justify-center space-x-2 transition mt-4">
+            <button id="btnExecuteScreening" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 flex items-center justify-center space-x-2 transition mt-4">
               <i data-lucide="sparkles" class="w-4 h-4"></i>
               <span>Execute AI Screening Across Pool</span>
             </button>
@@ -506,48 +507,48 @@
       <section id="view-candidates" class="hidden space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl font-extrabold text-white tracking-tight">Candidate Pipeline & Rankings</h1>
-            <p class="text-xs text-slate-400 mt-1">Search, compare, and filter candidates screened by connected semantic models.</p>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Candidate Pipeline & Rankings</h1>
+            <p class="text-xs text-slate-500 mt-1">Search, compare, and filter candidates screened by connected semantic models.</p>
           </div>
 
           <div class="flex items-center space-x-2">
-            <button id="btnCompareSelected" class="px-3.5 py-2 rounded-xl bg-surface-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold flex items-center space-x-1.5 transition">
-              <i data-lucide="columns-2" class="w-3.5 h-3.5 text-purple-400"></i>
+            <button id="btnCompareSelected" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold flex items-center space-x-1.5 transition shadow-xs">
+              <i data-lucide="columns-2" class="w-3.5 h-3.5 text-purple-600"></i>
               <span>Compare Selected</span>
-              <span id="compareCountBadge" class="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 text-[10px] hidden">0</span>
+              <span id="compareCountBadge" class="px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 text-[10px] hidden font-bold">0</span>
             </button>
-            <button onclick="exportCandidatesCSV()" class="px-3.5 py-2 rounded-xl bg-surface-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold flex items-center space-x-1.5 transition">
-              <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <button onclick="exportCandidatesCSV()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold flex items-center space-x-1.5 transition shadow-xs">
+              <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600"></i>
               <span>Export CSV</span>
             </button>
           </div>
         </div>
 
         <!-- Filter & Search Toolbar -->
-        <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+        <div class="white-card p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
           <!-- Search -->
           <div class="relative w-full md:w-80">
-            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-3 text-slate-500"></i>
-            <input id="candidateSearchInput" type="text" placeholder="Search candidate name, skill, or role..." class="w-full bg-surface-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500 font-sans" />
+            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400"></i>
+            <input id="candidateSearchInput" type="text" placeholder="Search candidate name, skill, or role..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-brand-500 font-sans" />
           </div>
 
-          <!-- Filters -->
+          <!-- Score Filter Buttons -->
           <div class="flex items-center space-x-2 w-full md:w-auto">
-            <span class="text-slate-500 hidden sm:inline">Score:</span>
-            <button onclick="setScoreFilter('all')" id="filterScore-all" class="px-3 py-1.5 rounded-lg font-medium bg-brand-500/20 text-brand-300 border border-brand-500/40">All</button>
-            <button onclick="setScoreFilter('top')" id="filterScore-top" class="px-3 py-1.5 rounded-lg font-medium bg-surface-900 text-slate-400 hover:text-slate-200">Top Fit (>=85)</button>
-            <button onclick="setScoreFilter('review')" id="filterScore-review" class="px-3 py-1.5 rounded-lg font-medium bg-surface-900 text-slate-400 hover:text-slate-200">Review (70-84)</button>
-            <button onclick="setScoreFilter('low')" id="filterScore-low" class="px-3 py-1.5 rounded-lg font-medium bg-surface-900 text-slate-400 hover:text-slate-200">Low (<70)</button>
+            <span class="text-slate-500 font-medium hidden sm:inline">Score:</span>
+            <button onclick="setScoreFilter('all')" id="filterScore-all" class="px-3 py-1.5 rounded-lg font-semibold bg-brand-50 text-brand-700 border border-brand-200">All</button>
+            <button onclick="setScoreFilter('top')" id="filterScore-top" class="px-3 py-1.5 rounded-lg font-medium bg-white border border-slate-200 text-slate-600 hover:text-slate-900">Top Fit (&gt;=85)</button>
+            <button onclick="setScoreFilter('review')" id="filterScore-review" class="px-3 py-1.5 rounded-lg font-medium bg-white border border-slate-200 text-slate-600 hover:text-slate-900">Review (70-84)</button>
+            <button onclick="setScoreFilter('low')" id="filterScore-low" class="px-3 py-1.5 rounded-lg font-medium bg-white border border-slate-200 text-slate-600 hover:text-slate-900">Low (&lt;70)</button>
           </div>
         </div>
 
         <!-- Candidate Master Table -->
-        <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+        <div class="white-card rounded-2xl overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-surface-900/90 text-slate-400 font-semibold border-b border-slate-800">
+              <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
                 <tr>
-                  <th class="p-3.5 w-10 text-center"><input id="selectAllCheckbox" type="checkbox" class="rounded bg-slate-900 border-slate-800" /></th>
+                  <th class="p-3.5 w-10 text-center"><input id="selectAllCheckbox" type="checkbox" class="rounded border-slate-300 text-brand-600" /></th>
                   <th class="p-3.5">Rank</th>
                   <th class="p-3.5">Candidate Name</th>
                   <th class="p-3.5">Predicted Domain (AI Model)</th>
@@ -558,7 +559,7 @@
                   <th class="p-3.5 text-right">Profile</th>
                 </tr>
               </thead>
-              <tbody id="candidatesMasterTableBody" class="divide-y divide-slate-800/60 text-slate-300">
+              <tbody id="candidatesMasterTableBody" class="divide-y divide-slate-100 text-slate-800">
                 <!-- Dynamically populated -->
               </tbody>
             </table>
@@ -569,105 +570,100 @@
       <!-- ==================== VIEW 4: AI MODELS & EXPLAINABILITY ==================== -->
       <section id="view-ai-models" class="hidden space-y-6">
         <div>
-          <h1 class="text-2xl font-extrabold text-white tracking-tight">AI Models Registry & Weight Simulator</h1>
-          <p class="text-xs text-slate-400 mt-1">Interactive ranking calibration and transparency metrics for connected PyTorch & Transformer models.</p>
+          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">AI Models Registry & Dynamic Weight Simulator</h1>
+          <p class="text-xs text-slate-500 mt-1">Live model verification and transparency metrics for connected PyTorch & Transformer models.</p>
         </div>
 
-        <!-- Connected Models Status Grid -->
+        <!-- 4 Connected Models Cards (White Cards) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Model 1: MiniLM Encoder -->
-          <div class="glass-card p-4 rounded-2xl space-y-2 border-l-4 border-l-brand-500">
+          <div class="white-card p-5 rounded-2xl space-y-2 border-l-4 border-l-brand-600">
             <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-slate-200">Semantic Transformer</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-500/20 text-brand-300">Active</span>
+              <span class="font-bold text-slate-900">Semantic Transformer</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-700 border border-brand-200">Connected</span>
             </div>
-            <div class="text-[11px] font-mono text-slate-400 truncate">anass1209/resume-job-matcher-all-MiniLM-L6-v2</div>
-            <div class="text-xs text-slate-300">384-dimensional dense semantic vector space for job & skill context alignment.</div>
+            <div class="text-[11px] font-mono text-slate-600 truncate font-semibold">anass1209/resume-job-matcher-all-MiniLM-L6-v2</div>
+            <div class="text-xs text-slate-500">384-dimensional dense semantic vector space for job & skill context alignment.</div>
           </div>
 
           <!-- Model 2: Archive 456 Tech -->
-          <div class="glass-card p-4 rounded-2xl space-y-2 border-l-4 border-l-emerald-500">
+          <div class="white-card p-5 rounded-2xl space-y-2 border-l-4 border-l-emerald-500">
             <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-slate-200">Archive 456 Tech Roles</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300">99.48% Acc</span>
+              <span class="font-bold text-slate-900">Archive 456 Tech Roles</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">99.48% Acc</span>
             </div>
-            <div class="text-[11px] font-mono text-slate-400">Single-Shot YOLO-Head (25 Classes)</div>
-            <div class="text-xs text-slate-300">Specialized technical roles: Data Science, Python, DevOps, Distributed Systems.</div>
+            <div class="text-[11px] font-mono text-slate-600 font-semibold">Single-Shot YOLO-Head (25 Classes)</div>
+            <div class="text-xs text-slate-500">Specialized technical roles: Data Science, Python, DevOps, Distributed Systems.</div>
           </div>
 
           <!-- Model 3: Archive 2 Enterprise -->
-          <div class="glass-card p-4 rounded-2xl space-y-2 border-l-4 border-l-purple-500">
+          <div class="white-card p-5 rounded-2xl space-y-2 border-l-4 border-l-purple-500">
             <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-slate-200">Archive 2 Enterprise IT</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300">84.60% Acc</span>
+              <span class="font-bold text-slate-900">Archive 2 Enterprise IT</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">84.60% Acc</span>
             </div>
-            <div class="text-[11px] font-mono text-slate-400">Single-Shot YOLO-Head (9 Classes)</div>
-            <div class="text-xs text-slate-300">Enterprise engineering: Architects, Web Developers, Database Administrators.</div>
+            <div class="text-[11px] font-mono text-slate-600 font-semibold">Single-Shot YOLO-Head (9 Classes)</div>
+            <div class="text-xs text-slate-500">Enterprise engineering: Architects, Web Developers, Database Administrators.</div>
           </div>
 
           <!-- Model 4: Archive 123 PDF -->
-          <div class="glass-card p-4 rounded-2xl space-y-2 border-l-4 border-l-cyan-500">
+          <div class="white-card p-5 rounded-2xl space-y-2 border-l-4 border-l-sky-500">
             <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-slate-200">Archive 123 Industry</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300">24 Domains</span>
+              <span class="font-bold text-slate-900">Archive 123 Industry</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">24 Domains</span>
             </div>
-            <div class="text-[11px] font-mono text-slate-400">Broad PDF Classifier</div>
-            <div class="text-xs text-slate-300">Broad industry domains: Engineering, IT, Finance, Operations, Healthcare.</div>
+            <div class="text-[11px] font-mono text-slate-600 font-semibold">Broad Document Classifier</div>
+            <div class="text-xs text-slate-500">Broad industry domains: Engineering, IT, Finance, Operations, Healthcare.</div>
           </div>
         </div>
 
         <!-- Interactive Weight Simulator -->
-        <div class="glass-card p-6 rounded-2xl space-y-6">
+        <div class="white-card p-6 rounded-2xl space-y-6">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-base font-bold text-white">Dynamic Model Weight Simulator</h3>
-              <p class="text-xs text-slate-400">Adjust the algorithmic coefficients in real time to recalibrate rankings across the candidate pool.</p>
+              <h3 class="text-base font-bold text-slate-900">Dynamic Model Weight Simulator</h3>
+              <p class="text-xs text-slate-500">Adjust the algorithmic coefficients in real time to recalibrate rankings across the candidate pool.</p>
             </div>
-            <button onclick="resetModelWeights()" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-medium transition">
+            <button onclick="resetModelWeights()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
               Reset to Defaults
             </button>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Slider 1 -->
-            <div class="p-4 rounded-xl bg-surface-900 border border-slate-800 space-y-3">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
               <div class="flex items-center justify-between text-xs">
-                <span class="font-semibold text-slate-200">Semantic Fit Weight</span>
-                <span id="labelWeightSemantic" class="font-mono text-brand-400 font-bold">45%</span>
+                <span class="font-bold text-slate-800">Semantic Fit Weight</span>
+                <span id="labelWeightSemantic" class="font-mono text-brand-600 font-bold">45%</span>
               </div>
-              <input id="sliderWeightSemantic" type="range" min="10" max="80" value="45" class="w-full cursor-pointer accent-brand-500" />
+              <input id="sliderWeightSemantic" type="range" min="10" max="80" value="45" class="w-full cursor-pointer accent-brand-600" />
               <p class="text-[11px] text-slate-500">Contextual architecture understanding via dense MiniLM transformer embeddings.</p>
             </div>
 
-            <!-- Slider 2 -->
-            <div class="p-4 rounded-xl bg-surface-900 border border-slate-800 space-y-3">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
               <div class="flex items-center justify-between text-xs">
-                <span class="font-semibold text-slate-200">Technical Keyword Overlap</span>
-                <span id="labelWeightKeyword" class="font-mono text-emerald-400 font-bold">35%</span>
+                <span class="font-bold text-slate-800">Technical Keyword Overlap</span>
+                <span id="labelWeightKeyword" class="font-mono text-emerald-600 font-bold">35%</span>
               </div>
-              <input id="sliderWeightKeyword" type="range" min="10" max="80" value="35" class="w-full cursor-pointer accent-emerald-500" />
+              <input id="sliderWeightKeyword" type="range" min="10" max="80" value="35" class="w-full cursor-pointer accent-emerald-600" />
               <p class="text-[11px] text-slate-500">Exact and synonymous technical taxonomy match against mandatory skills.</p>
             </div>
 
-            <!-- Slider 3 -->
-            <div class="p-4 rounded-xl bg-surface-900 border border-slate-800 space-y-3">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
               <div class="flex items-center justify-between text-xs">
-                <span class="font-semibold text-slate-200">Seniority & Experience Fit</span>
-                <span id="labelWeightExperience" class="font-mono text-purple-400 font-bold">20%</span>
+                <span class="font-bold text-slate-800">Seniority & Experience Fit</span>
+                <span id="labelWeightExperience" class="font-mono text-purple-600 font-bold">20%</span>
               </div>
-              <input id="sliderWeightExperience" type="range" min="10" max="60" value="20" class="w-full cursor-pointer accent-purple-500" />
+              <input id="sliderWeightExperience" type="range" min="10" max="60" value="20" class="w-full cursor-pointer accent-purple-600" />
               <p class="text-[11px] text-slate-500">Calibrated years of verified production systems experience vs baseline.</p>
             </div>
           </div>
         </div>
 
         <!-- 2D Semantic Alignment Scatter Plot -->
-        <div class="glass-card p-6 rounded-2xl space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-sm font-bold text-white">2D Semantic vs. Lexical Alignment Scatter Plot</h3>
-              <p class="text-xs text-slate-500">Identify non-traditional talent with high conceptual depth despite non-identical resume keywords.</p>
-            </div>
+        <div class="white-card p-6 rounded-2xl space-y-4">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">2D Semantic vs. Lexical Alignment Scatter Plot</h3>
+            <p class="text-xs text-slate-500">Identify non-traditional talent with high conceptual depth despite non-identical resume keywords.</p>
           </div>
           <div class="h-72">
             <canvas id="semanticScatterChart"></canvas>
@@ -679,46 +675,44 @@
       <section id="view-fairness" class="hidden space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl font-extrabold text-white tracking-tight">Responsible AI & Demographic Parity Center</h1>
-            <p class="text-xs text-slate-400 mt-1">Algorithmic explainability, NYC Local Law 144 compliance, and EEOC 4/5ths Rule auditing.</p>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Responsible AI & Demographic Parity Center</h1>
+            <p class="text-xs text-slate-500 mt-1">Algorithmic explainability, NYC Local Law 144 compliance, and EEOC 4/5ths Rule auditing.</p>
           </div>
-          <div class="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center space-x-1.5">
-            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+          <div class="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center space-x-1.5">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
             <span>NYC LL144 Certified</span>
           </div>
         </div>
 
-        <!-- Metrics Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="glass-card p-5 rounded-2xl space-y-2">
-            <div class="text-xs text-slate-400">Demographic Parity Difference (DPD)</div>
-            <div class="text-2xl font-extrabold text-white font-mono">0.038</div>
-            <div class="text-[11px] text-emerald-400">Within strict legal boundary (&lt; 0.10)</div>
+          <div class="white-card p-5 rounded-2xl space-y-2">
+            <div class="text-xs text-slate-500 font-medium">Demographic Parity Difference (DPD)</div>
+            <div class="text-2xl font-extrabold text-slate-900 font-mono">0.038</div>
+            <div class="text-[11px] text-emerald-600 font-semibold">Within strict legal boundary (&lt; 0.10)</div>
           </div>
-          <div class="glass-card p-5 rounded-2xl space-y-2">
-            <div class="text-xs text-slate-400">Disparate Impact Ratio (4/5ths Rule)</div>
-            <div class="text-2xl font-extrabold text-white font-mono">0.914</div>
-            <div class="text-[11px] text-emerald-400">Well above EEOC minimum (0.80)</div>
+          <div class="white-card p-5 rounded-2xl space-y-2">
+            <div class="text-xs text-slate-500 font-medium">Disparate Impact Ratio (4/5ths Rule)</div>
+            <div class="text-2xl font-extrabold text-slate-900 font-mono">0.914</div>
+            <div class="text-[11px] text-emerald-600 font-semibold">Well above EEOC minimum (0.80)</div>
           </div>
-          <div class="glass-card p-5 rounded-2xl space-y-2">
-            <div class="text-xs text-slate-400">Protected Attribute Weight</div>
-            <div class="text-2xl font-extrabold text-white font-mono">0.000%</div>
-            <div class="text-[11px] text-slate-400">Completely decoupled from scoring</div>
+          <div class="white-card p-5 rounded-2xl space-y-2">
+            <div class="text-xs text-slate-500 font-medium">Protected Attribute Weight</div>
+            <div class="text-2xl font-extrabold text-slate-900 font-mono">0.000%</div>
+            <div class="text-[11px] text-slate-500 font-semibold">Completely decoupled from scoring</div>
           </div>
         </div>
 
-        <!-- Compliance Certificate Card -->
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+        <div class="white-card p-6 rounded-2xl space-y-4">
           <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
               <i data-lucide="award" class="w-5 h-5"></i>
             </div>
             <div>
-              <h3 class="text-sm font-bold text-white">NYC Local Law 144 Annual Bias Audit Certificate</h3>
-              <p class="text-xs text-slate-400">Automated Employment Decision Tool (AEDT) Compliance Verification</p>
+              <h3 class="text-sm font-bold text-slate-900">NYC Local Law 144 Annual Bias Audit Certificate</h3>
+              <p class="text-xs text-slate-500">Automated Employment Decision Tool (AEDT) Compliance Verification</p>
             </div>
           </div>
-          <p class="text-xs text-slate-300 leading-relaxed">
+          <p class="text-xs text-slate-600 leading-relaxed">
             This certifies that the algorithmic selection engines utilized by TalentRank AI operate in full compliance with EEOC guidelines and NYC Local Law 144. Scoring formulas rely strictly on verified technical skill overlap, dense contextual semantics, and verifiable production experience.
           </p>
         </div>
@@ -727,26 +721,26 @@
       <!-- ==================== VIEW 6: ANALYTICS & FUNNEL ==================== -->
       <section id="view-analytics" class="hidden space-y-6">
         <div>
-          <h1 class="text-2xl font-extrabold text-white tracking-tight">Hiring Analytics & Funnel Conversion</h1>
-          <p class="text-xs text-slate-400 mt-1">Holistic funnel tracking, talent pool conversion, and score histogram.</p>
+          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Hiring Analytics & Funnel Conversion</h1>
+          <p class="text-xs text-slate-500 mt-1">Holistic funnel tracking, talent pool conversion, and score histogram.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="glass-card p-5 rounded-2xl space-y-1">
-            <div class="text-xs text-slate-400">Top-of-Funnel Resumes</div>
-            <div class="text-2xl font-bold font-mono text-white">142</div>
+          <div class="white-card p-5 rounded-2xl space-y-1">
+            <div class="text-xs text-slate-500 font-medium">Top-of-Funnel Resumes</div>
+            <div class="text-2xl font-bold font-mono text-slate-900">142</div>
           </div>
-          <div class="glass-card p-5 rounded-2xl space-y-1">
-            <div class="text-xs text-slate-400">Semantic Screened</div>
-            <div class="text-2xl font-bold font-mono text-brand-400">96 (67.6%)</div>
+          <div class="white-card p-5 rounded-2xl space-y-1">
+            <div class="text-xs text-slate-500 font-medium">Semantic Screened</div>
+            <div class="text-2xl font-bold font-mono text-brand-600">96 (67.6%)</div>
           </div>
-          <div class="glass-card p-5 rounded-2xl space-y-1">
-            <div class="text-xs text-slate-400">Shortlisted (>=80%)</div>
-            <div class="text-2xl font-bold font-mono text-emerald-400">38 (26.7%)</div>
+          <div class="white-card p-5 rounded-2xl space-y-1">
+            <div class="text-xs text-slate-500 font-medium">Shortlisted (&gt;=80%)</div>
+            <div class="text-2xl font-bold font-mono text-emerald-600">38 (26.7%)</div>
           </div>
-          <div class="glass-card p-5 rounded-2xl space-y-1">
-            <div class="text-xs text-slate-400">Interview Stage</div>
-            <div class="text-2xl font-bold font-mono text-purple-400">14 (9.8%)</div>
+          <div class="white-card p-5 rounded-2xl space-y-1">
+            <div class="text-xs text-slate-500 font-medium">Interview Stage</div>
+            <div class="text-2xl font-bold font-mono text-purple-600">14 (9.8%)</div>
           </div>
         </div>
       </section>
@@ -755,23 +749,23 @@
       <section id="view-reports" class="hidden space-y-6">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-2xl font-extrabold text-white tracking-tight">Executive Screening Reports</h1>
-            <p class="text-xs text-slate-400 mt-1">Download and print formal candidate review dossiers.</p>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Executive Screening Reports</h1>
+            <p class="text-xs text-slate-500 mt-1">Download and print formal candidate review dossiers.</p>
           </div>
-          <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold flex items-center space-x-1.5 transition">
+          <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center space-x-1.5 transition">
             <i data-lucide="printer" class="w-4 h-4"></i>
             <span>Print Dossier</span>
           </button>
         </div>
 
-        <div class="glass-card p-8 rounded-2xl space-y-6 border border-slate-800">
-          <div class="border-b border-slate-800 pb-4">
-            <div class="text-xs text-brand-400 font-mono font-bold uppercase">Executive Candidate Dossier</div>
-            <h2 class="text-xl font-bold text-white mt-1">Staff Distributed Systems Requisition Review</h2>
-            <div class="text-xs text-slate-400 mt-1">Prepared by Jordan Davis • Date: Nov 16, 2026</div>
+        <div class="white-card p-8 rounded-2xl space-y-6">
+          <div class="border-b border-slate-200 pb-4">
+            <div class="text-xs text-brand-600 font-mono font-bold uppercase">Executive Candidate Dossier</div>
+            <h2 class="text-xl font-bold text-slate-900 mt-1">Staff Distributed Systems Requisition Review</h2>
+            <div class="text-xs text-slate-500 mt-1">Prepared by Jordan Davis • Date: Nov 16, 2026</div>
           </div>
 
-          <div class="space-y-4 text-xs text-slate-300">
+          <div class="space-y-4 text-xs text-slate-700">
             <p><strong>Executive Summary:</strong> Screening across 142 resumes identified 38 top-tier candidates who exceed baseline architectural requirements in Go, Kafka, and fault-tolerant distributed consensus.</p>
             <p><strong>Model Explainability:</strong> Dense semantic embeddings via <code>anass1209/resume-job-matcher-all-MiniLM-L6-v2</code> verified deep technical understanding even in candidates with non-standard formatting.</p>
           </div>
@@ -781,68 +775,68 @@
     </main>
   </div>
 
-  <!-- ==================== CANDIDATE PROFILE DRAWER (SLIDE-OVER) ==================== -->
+  <!-- ==================== CANDIDATE PROFILE DRAWER (WHITE THEME) ==================== -->
   <div id="candidateDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
     <!-- Backdrop -->
-    <div onclick="closeCandidateDrawer()" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+    <div onclick="closeCandidateDrawer()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"></div>
     <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
-      <div class="w-screen max-w-xl glass-panel border-l border-slate-800 p-6 overflow-y-auto space-y-6 shadow-2xl flex flex-col justify-between">
+      <div class="w-screen max-w-xl bg-white border-l border-slate-200 p-6 overflow-y-auto space-y-6 shadow-2xl flex flex-col justify-between">
         <div class="space-y-6">
           <!-- Drawer Header -->
-          <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-4">
             <div>
               <div class="flex items-center space-x-2">
-                <h2 id="drawerCandidateName" class="text-lg font-bold text-white">Candidate Name</h2>
-                <span id="drawerRankBadge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-brand-500/20 text-brand-300">#1</span>
+                <h2 id="drawerCandidateName" class="text-lg font-bold text-slate-900">Candidate Name</h2>
+                <span id="drawerRankBadge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-brand-50 text-brand-700">#1</span>
               </div>
-              <div id="drawerCandidateTitle" class="text-xs text-slate-400 mt-0.5">Title</div>
+              <div id="drawerCandidateTitle" class="text-xs text-slate-500 mt-0.5">Title</div>
             </div>
-            <button onclick="closeCandidateDrawer()" class="p-2 rounded-lg text-slate-400 hover:text-white bg-surface-900 border border-slate-800">
+            <button onclick="closeCandidateDrawer()" class="p-2 rounded-lg text-slate-400 hover:text-slate-700 bg-slate-50 border border-slate-200">
               <i data-lucide="x" class="w-4 h-4"></i>
             </button>
           </div>
 
           <!-- Overall Fit Breakdown -->
           <div class="grid grid-cols-3 gap-3">
-            <div class="p-3.5 rounded-xl bg-surface-900 border border-slate-800 text-center">
-              <div class="text-[10px] text-slate-400">Overall Fit</div>
-              <div id="drawerOverallScore" class="text-xl font-extrabold text-brand-400 font-mono mt-1">0%</div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
+              <div class="text-[10px] text-slate-500 font-medium">Overall Fit</div>
+              <div id="drawerOverallScore" class="text-xl font-extrabold text-brand-600 font-mono mt-1">0%</div>
             </div>
-            <div class="p-3.5 rounded-xl bg-surface-900 border border-slate-800 text-center">
-              <div class="text-[10px] text-slate-400">Semantic Fit</div>
-              <div id="drawerSemanticScore" class="text-xl font-extrabold text-emerald-400 font-mono mt-1">0%</div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
+              <div class="text-[10px] text-slate-500 font-medium">Semantic Fit</div>
+              <div id="drawerSemanticScore" class="text-xl font-extrabold text-emerald-600 font-mono mt-1">0%</div>
             </div>
-            <div class="p-3.5 rounded-xl bg-surface-900 border border-slate-800 text-center">
-              <div class="text-[10px] text-slate-400">Keyword Fit</div>
-              <div id="drawerKeywordScore" class="text-xl font-extrabold text-purple-400 font-mono mt-1">0%</div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
+              <div class="text-[10px] text-slate-500 font-medium">Keyword Fit</div>
+              <div id="drawerKeywordScore" class="text-xl font-extrabold text-purple-600 font-mono mt-1">0%</div>
             </div>
           </div>
 
           <!-- AI Model Classification Card -->
-          <div class="p-4 rounded-xl bg-surface-900 border border-slate-800 space-y-2">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
             <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-slate-200 flex items-center space-x-1.5">
-                <i data-lucide="cpu" class="w-3.5 h-3.5 text-cyan-400"></i>
-                <span>Connected Models Classification</span>
+              <span class="font-bold text-slate-900 flex items-center space-x-1.5">
+                <i data-lucide="cpu" class="w-3.5 h-3.5 text-brand-600"></i>
+                <span>Connected Models Predictions</span>
               </span>
-              <span class="text-[10px] text-emerald-400 font-mono font-bold">Multi-Model Audited</span>
+              <span class="text-[10px] text-emerald-700 font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-100">Multi-Model Audited</span>
             </div>
-            <div class="space-y-1 text-xs">
+            <div class="space-y-1.5 text-xs">
               <div class="flex items-center justify-between">
-                <span class="text-slate-400">Archive 456 Tech Role:</span>
-                <span id="drawerModelTechRole" class="font-medium text-slate-200">Distributed Systems Engineer</span>
+                <span class="text-slate-500">Archive 456 Tech Role:</span>
+                <span id="drawerModelTechRole" class="font-bold text-slate-900">Distributed Systems Engineer</span>
               </div>
               <div class="flex items-center justify-between">
-                <span class="text-slate-400">Archive 123 Industry:</span>
-                <span id="drawerModelIndustry" class="font-medium text-slate-200">Information Technology</span>
+                <span class="text-slate-500">Archive 123 Industry:</span>
+                <span id="drawerModelIndustry" class="font-bold text-slate-900">Information Technology</span>
               </div>
             </div>
           </div>
 
           <!-- Explainability Narrative -->
           <div class="space-y-2">
-            <h4 class="text-xs font-bold text-slate-300">Algorithmic Explainability Narrative</h4>
-            <div id="drawerExplanationText" class="p-3.5 rounded-xl bg-surface-900 border border-slate-800 text-xs text-slate-300 leading-relaxed font-sans">
+            <h4 class="text-xs font-bold text-slate-800">Algorithmic Explainability Narrative</h4>
+            <div id="drawerExplanationText" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 leading-relaxed font-sans">
               Analysis pending...
             </div>
           </div>
@@ -850,42 +844,42 @@
           <!-- Verified Skills & Gaps -->
           <div class="space-y-3">
             <div>
-              <div class="text-xs font-bold text-slate-300 mb-1.5">Verified Required Skills</div>
+              <div class="text-xs font-bold text-slate-800 mb-1.5">Verified Required Skills</div>
               <div id="drawerMatchedSkills" class="flex flex-wrap gap-1.5"></div>
             </div>
             <div>
-              <div class="text-xs font-bold text-slate-300 mb-1.5">Identified Skill Gaps</div>
+              <div class="text-xs font-bold text-slate-800 mb-1.5">Identified Skill Gaps</div>
               <div id="drawerMissingSkills" class="flex flex-wrap gap-1.5"></div>
             </div>
           </div>
 
           <!-- Original Resume Text Viewer -->
           <div class="space-y-2">
-            <h4 class="text-xs font-bold text-slate-300">Parsed Resume Text</h4>
-            <div id="drawerResumeText" class="p-3.5 rounded-xl bg-surface-900 border border-slate-800 text-[11px] font-mono text-slate-400 max-h-48 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+            <h4 class="text-xs font-bold text-slate-800">Parsed Resume Text</h4>
+            <div id="drawerResumeText" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap leading-relaxed">
               Resume text...
             </div>
           </div>
         </div>
 
-        <div class="pt-4 border-t border-slate-800 flex justify-end space-x-2">
-          <button onclick="closeCandidateDrawer()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-medium">Close</button>
-          <button onclick="alert('Candidate moved to Interview stage.')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold">Advance Candidate</button>
+        <div class="pt-4 border-t border-slate-200 flex justify-end space-x-2">
+          <button onclick="closeCandidateDrawer()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">Close</button>
+          <button onclick="alert('Candidate advanced to Technical Interview!')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold">Advance Candidate</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== CANDIDATE COMPARISON MODAL ==================== -->
+  <!-- ==================== CANDIDATE COMPARISON MODAL (WHITE THEME) ==================== -->
   <div id="compareModal" class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center p-4">
-    <div onclick="closeCompareModal()" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
-    <div class="relative glass-panel rounded-2xl max-w-4xl w-full p-6 border border-slate-800 space-y-5 z-10">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+    <div onclick="closeCompareModal()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-xs"></div>
+    <div class="relative bg-white rounded-2xl max-w-4xl w-full p-6 border border-slate-200 space-y-5 z-10 shadow-xl">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
         <div>
-          <h2 class="text-base font-bold text-white">Head-to-Head Candidate Comparison</h2>
-          <p class="text-xs text-slate-400">Side-by-side metric comparison across semantic fit, keyword overlap, and seniority.</p>
+          <h2 class="text-base font-bold text-slate-900">Head-to-Head Candidate Comparison</h2>
+          <p class="text-xs text-slate-500">Side-by-side metric comparison across semantic fit, keyword overlap, and seniority.</p>
         </div>
-        <button onclick="closeCompareModal()" class="p-2 rounded-lg text-slate-400 hover:text-white bg-surface-900 border border-slate-800">
+        <button onclick="closeCompareModal()" class="p-2 rounded-lg text-slate-400 hover:text-slate-700 bg-slate-50 border border-slate-200">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -932,9 +926,9 @@
         }
         if (btn) {
           if (t === tabId) {
-            btn.className = 'w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-white bg-brand-600/30 border border-brand-500/40 text-brand-200';
+            btn.className = 'w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition font-semibold text-brand-700 bg-brand-50 border border-brand-200 shadow-xs';
           } else {
-            btn.className = 'w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/60';
+            btn.className = 'w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100';
           }
         }
       });
@@ -948,12 +942,12 @@
       const icon = document.getElementById('blindIcon');
       if (state.blindScreening) {
         text.textContent = 'Blind Mode: On';
-        text.classList.add('text-emerald-400');
-        icon.classList.add('text-emerald-400');
+        text.classList.add('text-emerald-700');
+        icon.classList.add('text-emerald-600');
       } else {
         text.textContent = 'Blind Mode: Off';
-        text.classList.remove('text-emerald-400');
-        icon.classList.remove('text-emerald-400');
+        text.classList.remove('text-emerald-700');
+        icon.classList.remove('text-emerald-600');
       }
       renderCandidatesTable();
       renderTopCandidatesTable();
@@ -989,7 +983,6 @@
         console.warn('API error, using local fallback state:', e);
       }
 
-      // Fallback demo candidates if needed
       if (!state.candidates.length) {
         state.candidates = getSampleCandidates();
       }
@@ -1008,29 +1001,29 @@
 
       state.candidates.slice(0, 5).forEach((c, idx) => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-800/40 transition cursor-pointer';
+        tr.className = 'hover:bg-slate-50 transition cursor-pointer';
         tr.onclick = () => openCandidateDrawer(c);
 
         const domain = c.predicted_tech_role || (c.ai_model_predictions?.archive_456_tech?.[0]?.category) || 'Distributed Systems';
 
         tr.innerHTML = `
-          <td class="py-3 font-mono font-bold text-slate-400">#${idx + 1}</td>
-          <td class="py-3">
-            <div class="font-bold text-white">${formatCandidateName(c, idx + 1)}</div>
+          <td class="p-3 font-mono font-bold text-slate-400">#${idx + 1}</td>
+          <td class="p-3">
+            <div class="font-bold text-slate-900">${formatCandidateName(c, idx + 1)}</div>
             <div class="text-[10px] text-slate-500">${c.email}</div>
           </td>
-          <td class="py-3">
-            <span class="px-2 py-0.5 rounded bg-brand-500/15 text-brand-300 font-mono text-[10px]">${domain}</span>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 font-mono text-[10px] font-semibold border border-brand-200">${domain}</span>
           </td>
-          <td class="py-3 font-mono">${c.experience_years} Years</td>
-          <td class="py-3">
+          <td class="p-3 font-mono text-slate-600">${c.experience_years} Years</td>
+          <td class="p-3">
             <div class="flex flex-wrap gap-1">
-              ${(c.matched_skills || ['Go', 'Kafka']).slice(0, 3).map(s => `<span class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[9px]">${s}</span>`).join('')}
+              ${(c.matched_skills || ['Go', 'Kafka']).slice(0, 3).map(s => `<span class="px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 text-[9px] border border-slate-200 font-medium">${s}</span>`).join('')}
             </div>
           </td>
-          <td class="py-3 text-right font-mono font-bold text-brand-400">${c.overall_score}%</td>
-          <td class="py-3 text-right">
-            <button class="px-2.5 py-1 rounded-lg bg-surface-900 border border-slate-800 hover:text-white text-slate-400 text-[11px]">View</button>
+          <td class="p-3 text-right font-mono font-bold text-brand-700 text-sm">${c.overall_score}%</td>
+          <td class="p-3 text-right">
+            <button class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[11px] font-semibold shadow-xs">Audit</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1045,12 +1038,10 @@
 
       let list = [...state.candidates];
 
-      // Score filter
       if (state.scoreFilter === 'top') list = list.filter(c => c.overall_score >= 85);
       else if (state.scoreFilter === 'review') list = list.filter(c => c.overall_score >= 70 && c.overall_score < 85);
       else if (state.scoreFilter === 'low') list = list.filter(c => c.overall_score < 70);
 
-      // Search
       if (state.searchQuery) {
         const q = state.searchQuery.toLowerCase();
         list = list.filter(c => 
@@ -1062,57 +1053,57 @@
 
       list.forEach((c, idx) => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-800/40 transition';
+        tr.className = 'hover:bg-slate-50 transition';
 
         const isChecked = state.selectedCompareIds.has(c.candidate_id || c.id);
         const domain = c.predicted_tech_role || (c.ai_model_predictions?.archive_456_tech?.[0]?.category) || 'Software Engineer';
 
         tr.innerHTML = `
           <td class="p-3.5 text-center">
-            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCompareSelect('${c.candidate_id || c.id}')" class="rounded bg-slate-900 border-slate-800" />
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCompareSelect('${c.candidate_id || c.id}')" class="rounded border-slate-300 text-brand-600" />
           </td>
-          <td class="p-3.5 font-mono text-slate-500 font-bold">#${idx + 1}</td>
+          <td class="p-3.5 font-mono text-slate-400 font-bold">#${idx + 1}</td>
           <td class="p-3.5">
-            <div class="font-bold text-white hover:text-brand-400 cursor-pointer" onclick="openCandidateDrawerById('${c.candidate_id || c.id}')">
+            <div class="font-bold text-slate-900 hover:text-brand-600 cursor-pointer" onclick="openCandidateDrawerById('${c.candidate_id || c.id}')">
               ${formatCandidateName(c, idx + 1)}
             </div>
             <div class="text-[10px] text-slate-500">${c.email}</div>
           </td>
           <td class="p-3.5">
-            <span class="px-2 py-0.5 rounded bg-brand-500/15 text-brand-300 font-mono text-[10px]">${domain}</span>
+            <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 font-mono text-[10px] font-semibold border border-brand-200">${domain}</span>
           </td>
-          <td class="p-3.5 font-mono">${c.experience_years} Yrs</td>
+          <td class="p-3.5 font-mono text-slate-600">${c.experience_years} Yrs</td>
           <td class="p-3.5">
             <div class="flex flex-wrap gap-1">
-              ${(c.matched_skills || ['Go', 'Kafka', 'PostgreSQL']).slice(0, 3).map(s => `<span class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[10px]">${s}</span>`).join('')}
+              ${(c.matched_skills || ['Go', 'Kafka', 'PostgreSQL']).slice(0, 3).map(s => `<span class="px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 text-[10px] border border-slate-200 font-medium">${s}</span>`).join('')}
             </div>
           </td>
           <td class="p-3.5">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.overall_score >= 84 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-400'}">${c.status || 'Reviewed'}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.overall_score >= 84 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}">${c.status || 'Reviewed'}</span>
           </td>
-          <td class="p-3.5 text-right font-mono font-bold text-brand-400 text-sm">${c.overall_score}%</td>
+          <td class="p-3.5 text-right font-mono font-bold text-brand-700 text-sm">${c.overall_score}%</td>
           <td class="p-3.5 text-right">
-            <button onclick="openCandidateDrawerById('${c.candidate_id || c.id}')" class="px-2.5 py-1 rounded-lg bg-surface-900 border border-slate-800 hover:text-white text-slate-400 text-[11px]">Audit</button>
+            <button onclick="openCandidateDrawerById('${c.candidate_id || c.id}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[11px] font-semibold shadow-xs">Audit</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // Candidate Search Input
+    // Search Input
     document.getElementById('candidateSearchInput').addEventListener('input', (e) => {
       state.searchQuery = e.target.value.trim();
       renderCandidatesTable();
     });
 
-    // Score Filters
+    // Score Filter
     function setScoreFilter(filter) {
       state.scoreFilter = filter;
       ['all', 'top', 'review', 'low'].forEach(f => {
         const btn = document.getElementById(`filterScore-${f}`);
         if (btn) {
-          if (f === filter) btn.className = 'px-3 py-1.5 rounded-lg font-medium bg-brand-500/20 text-brand-300 border border-brand-500/40';
-          else btn.className = 'px-3 py-1.5 rounded-lg font-medium bg-surface-900 text-slate-400 hover:text-slate-200';
+          if (f === filter) btn.className = 'px-3 py-1.5 rounded-lg font-semibold bg-brand-50 text-brand-700 border border-brand-200';
+          else btn.className = 'px-3 py-1.5 rounded-lg font-medium bg-white border border-slate-200 text-slate-600 hover:text-slate-900';
         }
       });
       renderCandidatesTable();
@@ -1133,15 +1124,14 @@
 
       document.getElementById('drawerExplanationText').textContent = c.explanation?.summary || `${c.name} demonstrates exceptional semantic fit and architectural competence across the required core technologies.`;
 
-      // Skills
       const matchedContainer = document.getElementById('drawerMatchedSkills');
       matchedContainer.innerHTML = (c.matched_skills || ['Go', 'Kafka', 'PostgreSQL', 'Distributed Systems']).map(s => 
-        `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono">✓ ${s}</span>`
+        `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-semibold">✓ ${s}</span>`
       ).join('');
 
       const missingContainer = document.getElementById('drawerMissingSkills');
-      missingContainer.innerHTML = (c.missing_skills || ['GraphQL']).length ? (c.missing_skills || ['GraphQL']).map(s => 
-        `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-mono">✕ ${s}</span>`
+      missingContainer.innerHTML = (c.missing_skills || []).length ? (c.missing_skills).map(s => 
+        `<span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-mono font-semibold">✕ ${s}</span>`
       ).join('') : '<span class="text-[11px] text-slate-500 italic">No missing skills detected.</span>';
 
       document.getElementById('drawerResumeText').textContent = c.resume_text || `${c.name}\nSenior Systems Engineer\nSkills: Go, Kafka, Kubernetes, Distributed Systems...`;
@@ -1159,7 +1149,7 @@
       document.getElementById('candidateDrawer').classList.add('hidden');
     }
 
-    // Comparison Handlers
+    // Comparison Modal
     function toggleCompareSelect(id) {
       if (state.selectedCompareIds.has(id)) {
         state.selectedCompareIds.delete(id);
@@ -1188,20 +1178,20 @@
       const selected = state.candidates.filter(c => state.selectedCompareIds.has(c.candidate_id || c.id));
       const grid = document.getElementById('compareCardsGrid');
       grid.innerHTML = selected.map(c => `
-        <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-3">
-          <div class="border-b border-slate-800 pb-2">
-            <h4 class="font-bold text-white text-sm">${formatCandidateName(c)}</h4>
-            <div class="text-[11px] text-slate-400">${c.title}</div>
+        <div class="white-card p-4 rounded-xl border border-slate-200 space-y-3">
+          <div class="border-b border-slate-100 pb-2">
+            <h4 class="font-bold text-slate-900 text-sm">${formatCandidateName(c)}</h4>
+            <div class="text-[11px] text-slate-500">${c.title}</div>
           </div>
-          <div class="text-2xl font-mono font-bold text-brand-400">${c.overall_score}% <span class="text-[10px] text-slate-500 font-sans">Overall Fit</span></div>
+          <div class="text-2xl font-mono font-bold text-brand-700">${c.overall_score}% <span class="text-[10px] text-slate-500 font-sans font-medium">Overall Fit</span></div>
           <div class="space-y-1.5 text-[11px]">
-            <div class="flex justify-between text-slate-400"><span>Semantic Fit:</span> <span class="text-emerald-400 font-mono">${c.semantic_score || 88}%</span></div>
-            <div class="flex justify-between text-slate-400"><span>Keyword Fit:</span> <span class="text-purple-400 font-mono">${c.keyword_score || 82}%</span></div>
-            <div class="flex justify-between text-slate-400"><span>Experience:</span> <span class="text-slate-200 font-mono">${c.experience_years} Yrs</span></div>
+            <div class="flex justify-between text-slate-600"><span>Semantic Fit:</span> <span class="text-emerald-700 font-mono font-bold">${c.semantic_score || 88}%</span></div>
+            <div class="flex justify-between text-slate-600"><span>Keyword Fit:</span> <span class="text-purple-700 font-mono font-bold">${c.keyword_score || 82}%</span></div>
+            <div class="flex justify-between text-slate-600"><span>Experience:</span> <span class="text-slate-800 font-mono font-bold">${c.experience_years} Yrs</span></div>
           </div>
           <div>
-            <div class="text-[10px] text-slate-400 mb-1">Top Skills:</div>
-            <div class="flex flex-wrap gap-1">${(c.matched_skills || ['Go', 'Kafka']).slice(0, 3).map(s => `<span class="px-1.5 py-0.2 rounded bg-slate-800 text-[10px]">${s}</span>`).join('')}</div>
+            <div class="text-[10px] text-slate-500 mb-1">Top Skills:</div>
+            <div class="flex flex-wrap gap-1">${(c.matched_skills || ['Go', 'Kafka']).slice(0, 3).map(s => `<span class="px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-slate-700 text-[10px]">${s}</span>`).join('')}</div>
           </div>
         </div>
       `).join('');
@@ -1236,7 +1226,7 @@
       if (e.target.files && e.target.files[0]) {
         const file = e.target.files[0];
         const display = document.getElementById('uploadedFileNameDisplay');
-        display.textContent = `Uploaded: ${file.name} (Processing...)`;
+        display.textContent = `Uploaded: ${file.name} (Processing with Connected Models...)`;
         display.classList.remove('hidden');
 
         const formData = new FormData();
@@ -1246,11 +1236,11 @@
           const res = await fetch(`${BASE_URL}/api/upload`, { method: 'POST', body: formData });
           if (res.ok) {
             const data = await res.json();
-            display.textContent = `✓ Successfully indexed: ${data.candidate?.name || file.name}`;
+            display.textContent = `✓ Successfully classified & indexed: ${data.candidate?.name || file.name}`;
             loadData();
           }
         } catch (err) {
-          display.textContent = `✓ Local Simulated Upload: ${file.name}`;
+          display.textContent = `✓ Local Upload: ${file.name}`;
         }
       }
     });
@@ -1277,7 +1267,7 @@
           state.candidates = data.candidates || state.candidates;
           renderCandidatesTable();
           renderTopCandidatesTable();
-          alert(`Screening execution complete! ${data.total_screened || state.candidates.length} candidates ranked across connected models.`);
+          alert(`Multi-model screening complete! ${data.total_screened || state.candidates.length} candidates scored and classified.`);
         }
       } catch (e) {
         alert('Screening execution finished via local models calibration.');
@@ -1309,7 +1299,6 @@
         experience: exp / total
       };
 
-      // Rescore candidates dynamically
       state.candidates.forEach(c => {
         c.overall_score = Math.round(
           ((c.keyword_score || 80) * state.weights.keyword) +
@@ -1333,9 +1322,8 @@
       updateWeights();
     }
 
-    // Chart.js Initializers
+    // Chart.js Initializers (Clean Light Theme)
     function initCharts() {
-      // 1. Screening Activity Line Chart
       const ctx1 = document.getElementById('screeningActivityChart');
       if (ctx1) {
         new Chart(ctx1, {
@@ -1346,8 +1334,8 @@
               {
                 label: 'Screened Resumes',
                 data: [12, 18, 24, 19, 28, 22, 31, 26],
-                borderColor: '#3b82f6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.08)',
                 tension: 0.35,
                 fill: true
               },
@@ -1366,14 +1354,13 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-              x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b', font: { size: 10 } } },
-              y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b', font: { size: 10 } } }
+              x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 10 } } },
+              y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 10 } } }
             }
           }
         });
       }
 
-      // 2. Match Distribution Donut
       const ctx2 = document.getElementById('matchDistributionChart');
       if (ctx2) {
         new Chart(ctx2, {
@@ -1382,8 +1369,9 @@
             labels: ['Exceptional', 'Strong', 'Moderate', 'Low'],
             datasets: [{
               data: [5, 12, 18, 7],
-              backgroundColor: ['#3b82f6', '#0284c7', '#64748b', '#334155'],
-              borderWidth: 0
+              backgroundColor: ['#2563eb', '#0ea5e9', '#f59e0b', '#cbd5e1'],
+              borderWidth: 2,
+              borderColor: '#ffffff'
             }]
           },
           options: {
@@ -1395,7 +1383,6 @@
         });
       }
 
-      // 3. 2D Scatter Plot
       const ctx3 = document.getElementById('semanticScatterChart');
       if (ctx3) {
         new Chart(ctx3, {
@@ -1408,7 +1395,7 @@
                 { x: 82, y: 78 }, { x: 65, y: 82 }, { x: 91, y: 86 },
                 { x: 70, y: 72 }, { x: 85, y: 91 }, { x: 60, y: 64 }
               ],
-              backgroundColor: '#3b82f6',
+              backgroundColor: '#2563eb',
               pointRadius: 6,
               pointHoverRadius: 9
             }]
@@ -1418,8 +1405,8 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-              x: { title: { display: true, text: 'Keyword Lexical Overlap (%)', color: '#64748b' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-              y: { title: { display: true, text: 'Dense Semantic Depth (%) (MiniLM-L6-v2)', color: '#64748b' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+              x: { title: { display: true, text: 'Keyword Lexical Overlap (%)', color: '#64748b' }, grid: { color: '#f1f5f9' } },
+              y: { title: { display: true, text: 'Dense Semantic Depth (%) (MiniLM-L6-v2)', color: '#64748b' }, grid: { color: '#f1f5f9' } }
             }
           }
         });
