@@ -1,149 +1,58 @@
-# 🚀 YOLOv11 Vision Hub & Telemetry Dashboard
+# Unified AI Intelligence Hub: YOLOv11 Vision & ATS Resume Checker
 
-A modern, high-performance, real-time Computer Vision dashboard designed specifically for **YOLOv11** object detection, segmentation, and analytics.
-
-Featuring both an **instant zero-install standalone dashboard** (`index.html`) and a **modular full-stack application** (React + Vite + Tailwind CSS frontend with a FastAPI + Ultralytics YOLOv11 backend).
+Production-ready framework combining **Ultralytics YOLOv11** computer vision inference with a **Multi-Model ATS Resume Intelligence Platform** modeled after top enterprise ATS checkers (Zety).
 
 ---
 
-## 📸 Key Features
+## 🌟 Key Features
 
-- **⚡ Instant Testing (Simulator Mode)**: Test all UI features, canvas bounding boxes, webcam streams, and analytics right away without needing the model weights installed yet.
-- **🔌 Pluggable YOLOv11 Backend**: Seamlessly connects to FastAPI running `ultralytics.YOLO('yolo11n.pt')` or custom-trained weights (`best.pt`).
-- **📹 Dual Input Modes**:
-  - **Image Upload & Presets**: Drag and drop any image or test with built-in scenarios (Ocean Plastics Waste, Traffic, Street).
-  - **Live Camera / Webcam**: Real-time webcam inference with live FPS counter and low latency.
-- **🎛️ Real-Time Hyperparameter Tuning**:
-  - Dynamic **Confidence Threshold** slider (0.05 – 0.95)
-  - Dynamic **IoU / NMS Threshold** slider (0.10 – 0.90)
-  - Model architecture switcher (Nano, Small, Medium, Custom)
-- **📊 Real-time Telemetry & Analytics**:
-  - Live FPS gauge & forward latency breakdown
-  - Class frequency distribution bars
-  - Bounding box telemetry table
-  - **Export Detections to JSON and CSV** with one click.
+### 1. 👁️ YOLOv11 Computer Vision Suite
+- **Interactive Vision Dashboard (`index.html`)**: Real-time object detection via Image upload, live webcam streaming, and simulated preview.
+- **FastAPI Backend Server (`backend/main.py`)**: High-throughput REST API and WebSocket streaming endpoint (`/ws/stream`).
+- **Complete Pipeline**: Training (`train.py`), Validation (`val.py`), Inference (`predict.py`), and Model Export (`export.py`).
 
----
-
-## 🏗️ Project Architecture
-
-```
-dashboard/
-├── index.html                  # ⚡ Instant Standalone Dashboard (Runs directly in any browser)
-├── .gitignore                  # Git ignore rules for node_modules, .venv, *.pt weights
-├── README.md                   # Project documentation & GitHub push guide
-│
-├── frontend/                   # 🎨 Full-Stack React + Vite + Tailwind Frontend
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   ├── index.html
-│   └── src/
-│       ├── main.jsx
-│       ├── App.jsx
-│       └── index.css
-│
-└── backend/                    # 🐍 FastAPI + Ultralytics YOLOv11 Backend
-    ├── main.py                 # FastAPI server (REST & WebSocket endpoints)
-    ├── yolo_service.py         # YOLOv11 inference engine with fallback mock
-    ├── requirements.txt        # Python dependencies
-    ├── test_client.py          # Quick verification script
-    └── models/
-        └── README.md           # Instructions for placing yolo11*.pt / best.pt weights
-```
+### 2. 📄 Zety-Style ATS Resume Checker & Multi-Model Intelligence
+- **Overall ATS Readability Score (0-100)**: Real-time gauge and audit assessing ATS pass probability.
+- **Mandatory Sections Audit**: Automatically detects Contact Info, Professional Summary, Work Experience, Education, Skills, Projects, and Certifications.
+- **Measurable Metrics & Action Verbs**: Scans for quantifiable impact numbers and strong action verbs.
+- **Semantic Job Description Matcher**: Cosine similarity against target job postings with matched & missing keyword analysis.
+- **Multi-Model Connected AI Hub**:
+  - **Archive 123 Model**: 24 Broad Industry Categories (PDF and text-based)
+  - **Archive 456 Model**: 25 Specialized Technical & Engineering Domains (**99.48%** validation accuracy)
+  - **Archive 2 Model**: 9 Enterprise IT & Architecture Domains (**84.60%** validation accuracy)
+  - **Pretrained Semantic Transformer**: `anass1209/resume-job-matcher-all-MiniLM-L6-v2` (384-dimensional dense semantic vectors)
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start
 
-### Option A: Instant Browser Preview (Zero Installation)
-Simply double click or open **`index.html`** in any web browser!
-- Test the interactive dashboard immediately.
-- Try the sample presets (Ocean Plastics, Traffic, Street).
-- Test with your local webcam or upload your own images.
-- Sliders and bounding box visualizers work out of the box with simulated YOLOv11 predictions.
-
----
-
-### Option B: Full-Stack Setup (FastAPI + YOLOv11 Backend)
-
-#### 1. Setup & Run the YOLOv11 Backend
+### 1. Install Dependencies
 ```bash
-# Navigate to backend and install requirements
+pip install -r requirements.txt
 pip install -r backend/requirements.txt
-
-# Start the FastAPI inference server
-uvicorn backend.main:app --reload --port 8000
 ```
-The API documentation will be available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-#### 2. Run the React Frontend (Optional)
+### 2. Start the Unified FastAPI Backend
+```bash
+uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Interactive API documentation available at: `http://localhost:8000/docs`
+
+### 3. Open the Dashboard
+Open `index.html` in any web browser, or launch the React frontend in `frontend/`:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) to view the React application.
 
 ---
 
-## 🎯 How to Connect Your Custom YOLOv11 Model
+## 📊 API Endpoints
 
-1. **Place your trained `.pt` weights**:
-   Copy your trained weights file (e.g. `best.pt` or `ocean_plastics.pt`) into the `backend/models/` folder:
-   ```bash
-   backend/models/best.pt
-   ```
-
-2. **Update the model in `backend/yolo_service.py`**:
-   ```python
-   yolo_engine = YOLOv11Service(model_path="backend/models/best.pt")
-   ```
-
-3. **In the Dashboard**:
-   - Click the **API Config** button in the header.
-   - Set the API URL to `http://localhost:8000`.
-   - Click **Test Health** and **Save Settings**.
-   - Your dashboard is now running live inferences with your custom YOLOv11 model!
-
----
-
-## 📡 API Endpoints Reference
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/health` | Health check, device info, and loaded model status |
-| `POST` | `/predict/image` | Runs detection on uploaded image; returns boxes & metrics |
-| `POST` | `/model/load` | Dynamically switches loaded weights file |
-| `WS` | `/ws/stream` | WebSocket endpoint for high-speed live camera streams |
-
----
-
-## 🐙 How to Push this Project to GitHub
-
-Follow these steps in your terminal inside the `dashboard` folder:
-
-```bash
-# 1. Initialize Git repository (if not already initialized)
-git init
-
-# 2. Stage all project files
-git add .
-
-# 3. Create initial commit
-git commit -m "Initial commit: YOLOv11 Vision Dashboard & FastAPI backend"
-
-# 4. Set default branch to main
-git branch -M main
-
-# 5. Add your GitHub remote repository (replace with your repo URL)
-git remote add origin https://github.com/<YOUR_USERNAME>/<YOUR_REPOSITORY_NAME>.git
-
-# 6. Push to GitHub
-git push -u origin main
-```
-
----
-
-## 📄 License
-MIT License. Feel free to use and customize for your research, academic, and production projects!
+- `GET /health` — Health check status for vision & resume engines.
+- `POST /predict/image` — YOLOv11 image detection with bounding boxes & latency.
+- `POST /api/resume/analyze-pdf` — Full ATS report & multi-model classification from an uploaded PDF.
+- `POST /api/resume/analyze-text` — ATS audit and job description semantic match from raw text.
+- `GET /api/resume/models` — Registry of all connected PyTorch and Transformer models.
