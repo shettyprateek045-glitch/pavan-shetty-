@@ -742,13 +742,13 @@
       <div class="space-y-3 text-xs">
         <div>
           <label class="block text-slate-300 font-medium mb-1">FastAPI Backend URL</label>
-          <input id="inputApiUrl" type="text" value="http://localhost:8000" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-brand-500 font-mono" />
+          <input id="inputApiUrl" type="text" value="" placeholder="Auto-detected origin" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-brand-500 font-mono" />
           <p class="text-[11px] text-slate-500 mt-1">Default FastAPI endpoint for image prediction: <code class="text-slate-400">/predict/image</code></p>
         </div>
 
         <div>
           <label class="block text-slate-300 font-medium mb-1">Model Weights Path (.pt / .onnx)</label>
-          <input id="inputModelPath" type="text" value="backend/models/yolo11n.pt" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-brand-500 font-mono" />
+          <input id="inputModelPath" type="text" value="yolo11s.pt" class="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-brand-500 font-mono" />
         </div>
       </div>
 
@@ -769,10 +769,15 @@
     // Initialize Lucide Icons
     lucide.createIcons();
 
+    // Auto-detect backend host or fallback
+    const defaultApiUrl = (typeof window !== 'undefined' && window.location.protocol.startsWith('http'))
+      ? window.location.origin
+      : 'http://localhost:8000';
+
     // Application State
     const state = {
-      mode: 'sim', // 'sim' or 'api'
-      apiUrl: 'http://localhost:8000',
+      mode: 'api', // default to api mode for live server deployment
+      apiUrl: defaultApiUrl,
       confidence: 0.40,
       iou: 0.45,
       activeModel: 'yolo11s.pt',
@@ -966,6 +971,26 @@
         alert(`Could not connect to ${url}.\nPlease ensure FastAPI is running (uvicorn backend.main:app). Error: ${err.message}`);
       }
     });
+
+    // Auto initialize config input value and probe live backend health
+    const inputApiUrlEl = document.getElementById('inputApiUrl');
+    if (inputApiUrlEl) {
+      inputApiUrlEl.value = state.apiUrl;
+    }
+
+    async function probeBackendHealth() {
+      try {
+        const res = await fetch(`${state.apiUrl}/health`, { method: 'GET' });
+        if (res.ok) {
+          setMode('api');
+        } else {
+          setMode('sim');
+        }
+      } catch (err) {
+        setMode('sim');
+      }
+    }
+    probeBackendHealth();
 
     // File Upload Handler
     fileInput.addEventListener('change', (e) => {

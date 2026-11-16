@@ -32,20 +32,25 @@ pip install -r requirements.txt
 pip install -r backend/requirements.txt
 ```
 
-### 2. Start the Unified FastAPI Backend
+### 2. Start the Unified Server (Local or Cloud Deployment)
 ```bash
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+# Run root server entrypoint (auto-detects $PORT and serves dashboard at /)
+python app.py
+
+# Or run with uvicorn
+uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
 Interactive API documentation available at: `http://localhost:8000/docs`
+Web Dashboard served directly at: `http://localhost:8000/`
 
-### 3. Open the Dashboard
-Open `index.html` in any web browser, or launch the React frontend in `frontend/`:
-```bash
-cd frontend
-npm install
-npm run dev
-```
+### 3. Cloud Deployment (Onslate / Render / Railway / Heroku)
+The repository includes production configuration for cloud PaaS hosting platforms:
+- **`app.py`**: Binds to `0.0.0.0` and reads dynamic `$PORT` environment variable.
+- **`Procfile`**: `web: uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}`
+- **`start.sh`**: Shell entrypoint for container runtimes.
+- **`package.json`**: NPM start scripts for hybrid and Node/Python buildpacks.
+- **`index.html`**: Automatically connects to the current host origin (`window.location.origin`) to prevent connection refused errors in cloud environments.
 
 ---
 

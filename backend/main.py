@@ -32,6 +32,25 @@ class TextAnalysisRequest(BaseModel):
 
 @app.get("/")
 def read_root():
+    from pathlib import Path
+    from fastapi.responses import FileResponse
+    # Serve interactive web dashboard if available
+    index_path = Path(__file__).resolve().parent.parent / "index.html"
+    if not index_path.exists():
+        index_path = Path("index.html")
+    if index_path.exists():
+        return FileResponse(str(index_path))
+    return {
+        "title": "Unified Vision & ATS Resume AI API",
+        "status": "online",
+        "docs_url": "/docs",
+        "vision_model": yolo_engine.model_path,
+        "resume_models_connected": list(resume_engine.models.keys()),
+        "semantic_encoder_loaded": resume_engine.encoder_loaded
+    }
+
+@app.get("/api/info")
+def get_api_info():
     return {
         "title": "Unified Vision & ATS Resume AI API",
         "status": "online",
