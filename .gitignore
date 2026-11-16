@@ -7,9 +7,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Build outputs
-dist/
-build/
+# Build outputs (allow pre-built production assets for Zoho Catalyst Slate)
+!dist/
+!build/
+!public/
 *.egg-info/
 
 # Ignore massive datasets from git

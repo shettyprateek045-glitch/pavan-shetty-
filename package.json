@@ -2,16 +2,18 @@
   "name": "pavan-shetty-unified-ai-dashboard",
   "version": "2.0.0",
   "description": "Unified YOLOv11 Computer Vision and Multi-Model ATS Resume Intelligence Dashboard",
-  "main": "app.py",
+  "main": "index.html",
   "scripts": {
-    "start": "python app.py || uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}",
-    "build": "echo 'Build complete'"
+    "build": "node build.js",
+    "start": "python app.py || uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000} || npx serve dist -l ${PORT:-8000}",
+    "serve": "npx serve dist -l 8000"
   },
   "keywords": [
     "yolov11",
     "ats-resume",
     "fastapi",
-    "computer-vision"
+    "computer-vision",
+    "catalyst-slate"
   ],
   "author": "Pavan Shetty",
   "license": "MIT"
