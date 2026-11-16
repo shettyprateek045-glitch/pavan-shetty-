@@ -59,6 +59,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount AI Resume Screening Router
+try:
+    from screening_routes import router as screening_router
+    app.include_router(screening_router)
+except ImportError:
+    try:
+        from backend.screening_routes import router as screening_router
+        app.include_router(screening_router)
+    except Exception as e:
+        print(f"Notice: screening router load: {e}")
+
 # Models
 class WeightsConfig(BaseModel):
     keyword: float = 0.35
