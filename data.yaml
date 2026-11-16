@@ -1,0 +1,18 @@
+# YOLOv11 Dataset Configuration Template
+# Point the paths below to your training, validation, and test image folders.
+# Paths can be relative to this data.yaml file or absolute paths.
+
+# Dataset root directory (optional, or provide full relative paths below)
+path: .
+
+# Image directory paths (relative to path above)
+train: dataset/train/images
+val: dataset/valid/images
+test: dataset/test/images
+
+# Number of classes
+nc: 1
+
+# Class names list
+names:
+  0: object

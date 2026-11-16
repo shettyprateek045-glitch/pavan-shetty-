@@ -12,12 +12,14 @@ dist/
 build/
 *.egg-info/
 
-# YOLO & PyTorch model weights (large binaries)
-*.pt
-*.pth
-*.onnx
-*.engine
-*.tflite
+# Ignore massive datasets from git
+archive123/
+Resumes PDF/
+*.csv
+
+# YOLO & PyTorch model weights
+yolo11*.pt
+backend/models/*.pt
 !backend/models/README.md
 
 # Logs & temp files
