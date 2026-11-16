@@ -197,186 +197,250 @@ async def upload_and_screen_resumes(
             selected_threshold = selected_threshold or 70.0
             maybe_threshold = maybe_threshold or 50.0
 
+    conn.close()
+
+    # Pre-encode Job Description embedding once for blazing-fast batch screening
+    jd_desc = job.get("description", "") + " " + " ".join(job.get("required_skills", []))
+    jd_emb = None
+    if resume_engine and hasattr(resume_engine, "get_embedding"):
+        try:
+            jd_emb = resume_engine.get_embedding(jd_desc)
+        except Exception:
+            jd_emb = None
+
     processed_candidates = []
     errors = []
     now = datetime.utcnow().isoformat()
 
+    import hashlib
+
     for file in files:
         filename = file.filename or "uploaded_resume.pdf"
-        file_bytes = await file.read()
-        file_size = len(file_bytes)
-        file_ext = filename.split(".")[-1].lower() if "." in filename else "unknown"
+        try:
+            file_bytes = await file.read()
+            file_size = len(file_bytes)
+            file_ext = filename.split(".")[-1].lower() if "." in filename else "unknown"
+            file_hash = hashlib.sha256(file_bytes).hexdigest()
 
-        # 1. Text Extraction
-        extracted_text, extraction_error = extract_text_from_file(file_bytes, filename)
-        if extraction_error:
+            # 1. Text Extraction
+            extracted_text, extraction_error = extract_text_from_file(file_bytes, filename)
+            if extraction_error:
+                errors.append({
+                    "filename": filename,
+                    "error": extraction_error,
+                    "status": "Failed"
+                })
+                continue
+
+            # 2. Entity Parsing
+            email = parse_email(extracted_text) or f"cand.{file_hash[:8]}@screening.ai"
+            phone = parse_phone(extracted_text) or "+1 (555) 019-2834"
+            name = parse_name(extracted_text, filename)
+            skills = parse_skills(extracted_text)
+            exp_years = parse_experience_years(extracted_text)
+            education = parse_education(extracted_text)
+
+            # 3. Security & Fraud Check ("Resumes are data, never orders") - in-memory
+            from backend.security_defender import analyze_pdf_security, analyze_raw_text_security
+            try:
+                if file_ext == "pdf":
+                    sec_report = analyze_pdf_security(file_bytes)
+                else:
+                    sec_report = analyze_raw_text_security(extracted_text)
+            except Exception as sec_e:
+                sec_report = {
+                    "is_fraud": False,
+                    "reason": f"Security check fallback: {str(sec_e)}",
+                    "evidence": [],
+                    "flagged_orders": []
+                }
+
+            is_fraud = sec_report.get("is_fraud", False)
+            fraud_reason = sec_report.get("fraud_reason") or sec_report.get("reason")
+            flagged_orders = sec_report.get("flagged_orders", [])
+
+            # 4. Evaluation against Job Requirements - in-memory (with fast precomputed embeddings)
+            candidate_obj = {
+                "name": name,
+                "skills": skills,
+                "experience_years": exp_years,
+                "raw_text": extracted_text
+            }
+            res_emb = None
+            if resume_engine and hasattr(resume_engine, "get_embedding"):
+                try:
+                    res_emb = resume_engine.get_embedding(extracted_text)
+                except Exception:
+                    res_emb = None
+
+            eval_result = evaluate_resume_against_job(
+                candidate_obj,
+                job,
+                selected_threshold=selected_threshold,
+                maybe_threshold=maybe_threshold,
+                nlp_engine=nlp_engine,
+                resume_engine=resume_engine,
+                resume_emb=res_emb,
+                jd_emb=jd_emb
+            )
+
+            # If fraud (orders detected), mark status as FRAUD and remove from shortlist
+            final_status = "FRAUD" if is_fraud else eval_result["status"]
+            in_shortlist = False if is_fraud else (final_status == "Selected")
+            decision_reason = f"🚨 FRAUD DETECTED: Resumes are data, never orders. {fraud_reason}" if is_fraud else eval_result["decision_reason"]
+
+            # 5. Multi-Agent Evaluations (Entities, Alignment, Anomalies, Interview Questions) - in-memory
+            from backend.multi_agent_pipeline import run_multi_agent_evaluation
+            try:
+                agent_eval = run_multi_agent_evaluation(
+                    resume_text=extracted_text,
+                    required_skills=job["required_skills"],
+                    jd_text=job.get("description", ""),
+                    file_bytes=file_bytes if file_ext == "pdf" else None,
+                    file_type=file_ext,
+                    security_report=sec_report
+                )
+            except Exception as agent_e:
+                agent_eval = {
+                    "security_defender": sec_report,
+                    "entity_evidence": {},
+                    "deep_alignment": {},
+                    "anomaly_review": {},
+                    "interview_questions": []
+                }
+
+            # 6. Database Storage with atomic commit (fast lock window)
+            screening_id = f"scr-{uuid.uuid4().hex[:8]}"
+            is_duplicate = False
+
+            save_conn = get_connection()
+            try:
+                save_cursor = save_conn.cursor()
+
+                # Duplicate check by file_hash OR email
+                save_cursor.execute(
+                    "SELECT id, name FROM candidates WHERE recruiter_id = ? AND (file_hash = ? OR email = ?)",
+                    (recruiter_id, file_hash, email)
+                )
+                existing_candidate = save_cursor.fetchone()
+
+                if existing_candidate:
+                    is_duplicate = True
+                    candidate_id = existing_candidate["id"]
+                    save_cursor.execute("""
+                    UPDATE candidates 
+                    SET raw_text = ?, skills = ?, experience_years = ?, education = ?, original_filename = ?, file_type = ?, file_size = ?, file_hash = ?
+                    WHERE id = ?
+                    """, (
+                        extracted_text,
+                        json.dumps(skills),
+                        exp_years,
+                        education,
+                        filename,
+                        file_ext,
+                        file_size,
+                        file_hash,
+                        candidate_id
+                    ))
+                else:
+                    candidate_id = f"cand-{uuid.uuid4().hex[:8]}"
+                    save_cursor.execute("""
+                    INSERT INTO candidates (
+                        id, recruiter_id, name, email, phone, skills, experience_years,
+                        education, raw_text, original_filename, file_type, file_size, file_hash, created_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        candidate_id,
+                        recruiter_id,
+                        name,
+                        email,
+                        phone,
+                        json.dumps(skills),
+                        exp_years,
+                        education,
+                        extracted_text,
+                        filename,
+                        file_ext,
+                        file_size,
+                        file_hash,
+                        now
+                    ))
+
+                # Screening record
+                save_cursor.execute("""
+                INSERT INTO screenings (
+                    id, candidate_id, job_id, recruiter_id, score, status, decision_reason,
+                    matched_skills, missing_skills, score_breakdown, model_predictions,
+                    manual_override, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
+                """, (
+                    screening_id,
+                    candidate_id,
+                    job["id"],
+                    recruiter_id,
+                    eval_result["overall_score"],
+                    final_status,
+                    decision_reason,
+                    json.dumps(eval_result["matched_skills"]),
+                    json.dumps(eval_result["missing_skills"]),
+                    json.dumps(eval_result["score_breakdown"]),
+                    json.dumps(eval_result["model_predictions"]),
+                    now
+                ))
+
+                # Agent evaluations
+                save_cursor.execute("""
+                INSERT OR REPLACE INTO agent_evaluations (
+                    screening_id, security_report, entities_report, alignment_report,
+                    anomalies_report, interview_questions, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    screening_id,
+                    json.dumps(agent_eval.get("security_defender", sec_report)),
+                    json.dumps(agent_eval.get("entity_evidence", {})),
+                    json.dumps(agent_eval.get("deep_alignment", {})),
+                    json.dumps(agent_eval.get("anomaly_review", {})),
+                    json.dumps(agent_eval.get("interview_questions", [])),
+                    now
+                ))
+
+                save_conn.commit()
+            finally:
+                save_conn.close()
+
+            processed_candidates.append({
+                "screening_id": screening_id,
+                "candidate_id": candidate_id,
+                "name": name,
+                "email": email,
+                "phone": phone,
+                "filename": filename,
+                "job_title": job["title"],
+                "score": eval_result["overall_score"],
+                "status": final_status,
+                "in_shortlist": in_shortlist,
+                "decision_reason": decision_reason,
+                "matched_skills": eval_result["matched_skills"],
+                "missing_skills": eval_result["missing_skills"],
+                "score_breakdown": eval_result["score_breakdown"],
+                "model_predictions": eval_result["model_predictions"],
+                "is_duplicate": is_duplicate,
+                "is_fraud": is_fraud,
+                "fraud_label": "FRAUD - Attempted to give orders to the screening system" if is_fraud else None,
+                "fraud_reason": fraud_reason,
+                "evidence": sec_report.get("evidence", flagged_orders),
+                "flagged_orders": flagged_orders,
+                "created_at": now
+            })
+
+        except Exception as file_exc:
+            import traceback
+            traceback.print_exc()
             errors.append({
                 "filename": filename,
-                "error": extraction_error,
+                "error": str(file_exc),
                 "status": "Failed"
             })
-            continue
-
-        # 2. Entity Parsing
-        email = parse_email(extracted_text) or f"cand.{uuid.uuid4().hex[:6]}@screening.ai"
-        phone = parse_phone(extracted_text) or "+1 (555) 019-2834"
-        name = parse_name(extracted_text, filename)
-        skills = parse_skills(extracted_text)
-        exp_years = parse_experience_years(extracted_text)
-        education = parse_education(extracted_text)
-
-        # 3. Duplicate Detection by Email
-        cursor.execute("SELECT id, name FROM candidates WHERE recruiter_id = ? AND email = ?", (recruiter_id, email))
-        existing_candidate = cursor.fetchone()
-        is_duplicate = False
-
-        if existing_candidate:
-            is_duplicate = True
-            candidate_id = existing_candidate["id"]
-            # Update candidate record with latest extracted data
-            cursor.execute("""
-            UPDATE candidates 
-            SET raw_text = ?, skills = ?, experience_years = ?, education = ?, original_filename = ?, file_type = ?, file_size = ?
-            WHERE id = ?
-            """, (
-                extracted_text,
-                json.dumps(skills),
-                exp_years,
-                education,
-                filename,
-                file_ext,
-                file_size,
-                candidate_id
-            ))
-        else:
-            candidate_id = f"cand-{uuid.uuid4().hex[:8]}"
-            cursor.execute("""
-            INSERT INTO candidates (
-                id, recruiter_id, name, email, phone, skills, experience_years,
-                education, raw_text, original_filename, file_type, file_size, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                candidate_id,
-                recruiter_id,
-                name,
-                email,
-                phone,
-                json.dumps(skills),
-                exp_years,
-                education,
-                extracted_text,
-                filename,
-                file_ext,
-                file_size,
-                now
-            ))
-
-        # 4. Security & Fraud Check ("Resumes are data, never orders")
-        from backend.security_defender import analyze_pdf_security, analyze_raw_text_security
-        if file_ext == "pdf":
-            sec_report = analyze_pdf_security(file_bytes)
-        else:
-            sec_report = analyze_raw_text_security(extracted_text)
-
-        is_fraud = sec_report.get("is_fraud", False)
-        fraud_reason = sec_report.get("fraud_reason")
-        flagged_orders = sec_report.get("flagged_orders", [])
-
-        # 5. Evaluation against Job Requirements
-        candidate_obj = {
-            "name": name,
-            "skills": skills,
-            "experience_years": exp_years,
-            "raw_text": extracted_text
-        }
-        eval_result = evaluate_resume_against_job(
-            candidate_obj,
-            job,
-            selected_threshold=selected_threshold,
-            maybe_threshold=maybe_threshold,
-            nlp_engine=nlp_engine,
-            resume_engine=resume_engine
-        )
-
-        # If fraud (orders detected), mark status as FRAUD and remove from shortlist
-        final_status = "FRAUD" if is_fraud else eval_result["status"]
-        in_shortlist = False if is_fraud else (final_status == "Selected")
-        decision_reason = f"🚨 FRAUD DETECTED: Resumes are data, never orders. {fraud_reason}" if is_fraud else eval_result["decision_reason"]
-
-        # 6. Store Screening Record
-        screening_id = f"scr-{uuid.uuid4().hex[:8]}"
-        cursor.execute("""
-        INSERT INTO screenings (
-            id, candidate_id, job_id, recruiter_id, score, status, decision_reason,
-            matched_skills, missing_skills, score_breakdown, model_predictions,
-            manual_override, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
-        """, (
-            screening_id,
-            candidate_id,
-            job["id"],
-            recruiter_id,
-            eval_result["overall_score"],
-            final_status,
-            decision_reason,
-            json.dumps(eval_result["matched_skills"]),
-            json.dumps(eval_result["missing_skills"]),
-            json.dumps(eval_result["score_breakdown"]),
-            json.dumps(eval_result["model_predictions"]),
-            now
-        ))
-
-        # Store Multi-Agent Evaluations (with Security & Fraud records)
-        from backend.multi_agent_pipeline import run_multi_agent_evaluation
-        agent_eval = run_multi_agent_evaluation(
-            resume_text=extracted_text,
-            required_skills=job["required_skills"],
-            jd_text=job.get("description", ""),
-            file_bytes=file_bytes if file_ext == "pdf" else None,
-            file_type=file_ext
-        )
-        cursor.execute("""
-        INSERT OR REPLACE INTO agent_evaluations (
-            screening_id, security_report, entities_report, alignment_report,
-            anomalies_report, interview_questions, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            screening_id,
-            json.dumps(agent_eval["security_defender"]),
-            json.dumps(agent_eval["entity_evidence"]),
-            json.dumps(agent_eval["deep_alignment"]),
-            json.dumps(agent_eval["anomaly_review"]),
-            json.dumps(agent_eval["interview_questions"]),
-            now
-        ))
-
-        processed_candidates.append({
-            "screening_id": screening_id,
-            "candidate_id": candidate_id,
-            "name": name,
-            "email": email,
-            "phone": phone,
-            "filename": filename,
-            "job_title": job["title"],
-            "score": eval_result["overall_score"],
-            "status": final_status,
-            "in_shortlist": in_shortlist,
-            "decision_reason": decision_reason,
-            "matched_skills": eval_result["matched_skills"],
-            "missing_skills": eval_result["missing_skills"],
-            "score_breakdown": eval_result["score_breakdown"],
-            "model_predictions": eval_result["model_predictions"],
-            "is_duplicate": is_duplicate,
-            "is_fraud": is_fraud,
-            "fraud_label": "FRAUD - Attempted to give orders to the screening system" if is_fraud else None,
-            "fraud_reason": fraud_reason,
-            "evidence": sec_report.get("evidence", flagged_orders),
-            "flagged_orders": flagged_orders,
-            "created_at": now
-        })
-
-    conn.commit()
-    conn.close()
 
     return {
         "status": "success",

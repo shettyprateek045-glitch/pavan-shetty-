@@ -52,15 +52,15 @@
   </script>
 
   <style>
-    /* Global Offline Typography & Dark Theme */
+    /* Clean All-White Professional Theme */
     * {
       box-sizing: border-box;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
     body {
-      background-color: #0b0c0e !important;
-      color: #f1f5f9 !important;
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       overflow-x: hidden;
       margin: 0;
@@ -72,18 +72,18 @@
       -webkit-user-select: none;
     }
     .white-card {
-      background: #121418 !important;
-      border: 1px solid #1e242d !important;
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
       border-radius: 1rem;
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
-      color: #f1f5f9;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      color: #0f172a !important;
+      transition: all 0.2s ease-in-out;
     }
     .white-card:hover {
-      border-color: rgba(163, 230, 53, 0.3) !important;
-      box-shadow: 0 8px 28px -4px rgba(163, 230, 53, 0.12) !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      border-color: #cbd5e1 !important;
     }
-    /* Monospace uppercase chips */
+    /* Monospace Status Chips (Light Theme) */
     .status-chip {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 10px;
@@ -96,28 +96,28 @@
       align-items: center;
       gap: 6px;
       white-space: nowrap;
-      background: #16191f;
-      border: 1px solid #2a323d;
-      color: #e2e8f0;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: #334155;
     }
     .status-chip-lime {
-      background: rgba(77, 90, 26, 0.35);
-      border: 1px solid rgba(163, 230, 53, 0.4);
-      color: #bef264;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
     }
     .pulse-dot-lime {
       width: 6px;
       height: 6px;
       border-radius: 9999px;
-      background-color: #a3e635;
-      box-shadow: 0 0 8px #a3e635;
+      background-color: #16a34a;
+      box-shadow: 0 0 6px #16a34a;
       animation: pulseDot 2s infinite ease-in-out;
     }
     @keyframes pulseDot {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.4; transform: scale(0.85); }
     }
-    /* Sidebar consistent layout */
+    /* Sidebar Navigation Clean Layout */
     .sidebar-nav-btn {
       width: 100%;
       display: flex;
@@ -135,20 +135,21 @@
       cursor: pointer;
     }
     .sidebar-nav-btn-active {
-      background: #1e240e !important;
-      border: 1px solid rgba(163, 230, 53, 0.4) !important;
-      color: #bef264 !important;
-      box-shadow: 0 0 15px rgba(163, 230, 53, 0.15);
+      background: #f1f5f9 !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #0f172a !important;
+      font-weight: 700;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
     }
     .sidebar-nav-btn-inactive {
       background: transparent;
       border: 1px solid transparent;
-      color: #94a3b8;
+      color: #64748b;
     }
     .sidebar-nav-btn-inactive:hover {
-      background: #16191f;
-      color: #ffffff;
-      border-color: #2a323d;
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #e2e8f0;
     }
     /* Scrollbar */
     ::-webkit-scrollbar {
@@ -156,166 +157,20 @@
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #0b0c0e;
+      background: #f8fafc;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1e242d;
+      background: #cbd5e1;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #4d5a1a;
+      background: #94a3b8;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-[#0b0c0e] text-slate-100 selection:bg-[#a3e635] selection:text-slate-950">
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-brand-500 selection:text-slate-900">
 
-  <!-- ==================== 3D WIREFRAME SPHERE LANDING & AUTH VIEW ==================== -->
-  <section id="view-landing-auth" class="min-h-screen relative flex flex-col justify-between bg-[#0b0c0e] text-slate-100 overflow-hidden z-20">
-    <!-- Starfield & 3D Background Canvas Container -->
-    <div id="threeSceneContainer" class="absolute inset-0 w-full h-full pointer-events-none z-0">
-      <canvas id="landing3dCanvas" class="w-full h-full block" aria-hidden="true"></canvas>
-    </div>
-
-    <!-- Top Navigation Header -->
-    <header class="relative z-10 w-full border-b border-[#1e242d] px-6 lg:px-12 py-4 flex items-center justify-between backdrop-blur-xs bg-[#0b0c0e]/80">
-      <!-- Brand Lockup -->
-      <div class="flex items-center space-x-3">
-        <div class="w-9 h-9 rounded-xl bg-[#1e240e] border border-[#a3e635]/40 flex items-center justify-center shadow-[0_0_15px_rgba(163,230,53,0.2)]">
-          <i data-lucide="shield-check" class="w-5 h-5 text-[#a3e635]"></i>
-        </div>
-        <div>
-          <span class="text-sm font-extrabold tracking-tight text-white font-sans">TALENTRANK AI</span>
-          <span class="ml-2 font-mono text-[10px] text-[#a3e635] bg-[#1e240e] px-1.5 py-0.5 rounded border border-[#a3e635]/30">v2.4-PROD</span>
-        </div>
-      </div>
-
-      <!-- Real-time Status Chips -->
-      <div class="flex items-center space-x-3">
-        <div class="status-chip status-chip-lime hidden sm:inline-flex">
-          <span class="pulse-dot-lime"></span>
-          <span id="landingChipStatus">SYSTEM ONLINE</span>
-        </div>
-        <div class="status-chip hidden md:inline-flex">
-          <span id="landingChipProtocol">⚡ LOCAL :8000</span>
-        </div>
-        <div class="status-chip status-chip-lime">
-          <span class="pulse-dot-lime"></span>
-          <span id="landingChipLatency">--ms LATENCY</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- Main Content Area: Split Desktop / Stacked Mobile -->
-    <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-6 lg:px-12 py-8 flex flex-col lg:flex-row items-center justify-between gap-12">
-      <!-- Left Column: Headline, Monospace Chips & Narrative -->
-      <div class="w-full lg:w-1/2 space-y-6 text-left">
-        <!-- Monospace Tag Chip -->
-        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#1e240e] border border-[#a3e635]/40 text-[#bef264] text-[11px] font-mono uppercase tracking-wider">
-          <span class="pulse-dot-lime"></span>
-          <span>Next-Gen Multi-Agent ATS Intelligence</span>
-        </div>
-
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08] font-sans">
-          Hire with <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] to-[#bef264]">evidence</span>,<br />not guesswork.
-        </h1>
-
-        <p class="text-sm sm:text-base text-slate-400 max-w-xl font-normal leading-relaxed">
-          Deep contextual resume evaluation powered by sentence transformers, PyMuPDF spatial bounds parsing, prompt-injection defense, and </p>
-
-        <!-- Feature Chips Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 max-w-lg font-mono text-[11px]">
-          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
-            <span class="text-[#a3e635]">▸</span>
-            <span class="text-slate-300">Resumes As Data</span>
-          </div>
-          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
-            <span class="text-[#a3e635]">▸</span>
-            <span class="text-slate-300">5-Agent Pipeline</span>
-          </div>
-          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
-            <span class="text-[#a3e635]">▸</span>
-            <span class="text-slate-300">Zero Injection</span>
-          </div>
-          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
-            <span class="text-[#a3e635]">▸</span>
-            <span class="text-slate-300">EEOC 4/5ths Rule</span>
-          </div>
-          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
-            <span class="text-[#a3e635]">▸</span>
-            <span class="text-slate-300">Bulk ZIP Ingestion</span>
-          </div>
-          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
-            <span class="text-[#a3e635]">▸</span>
-            <span class="text-slate-300">Dense MiniLM-L6</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Column: Glass Sign-In Card -->
-      <div class="w-full lg:w-[420px] shrink-0">
-        <div class="relative rounded-2xl bg-[#121418]/95 border border-[#1e242d] hover:border-[#a3e635]/40 transition-all duration-300 p-7 shadow-2xl backdrop-blur-md space-y-5">
-          <!-- Card Header -->
-          <div class="border-b border-[#1e242d] pb-4">
-            <div class="flex items-center space-x-2 mb-1.5">
-              <span class="w-2 h-2 rounded-full bg-[#a3e635]"></span>
-              <span class="text-[11px] font-mono uppercase text-[#a3e635] tracking-widest font-bold">SECURE AUTHENTICATION</span>
-            </div>
-            <h2 class="text-lg font-bold text-white tracking-tight">Recruiter Sign In</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Candidate data and screenings are isolated per recruiter profile.</p>
-          </div>
-
-          <!-- Alert Container for Errors -->
-          <div id="landingAuthAlert" class="hidden p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs"></div>
-
-          <!-- Form Fields -->
-          <div class="space-y-4 text-xs">
-            <div>
-              <label class="block text-slate-300 font-semibold mb-1.5 font-mono text-[11px] uppercase tracking-wider">Corporate Email</label>
-              <input id="landingEmail" type="email" value="recruiter@talentrank.ai" class="w-full bg-[#0b0c0e] border border-[#2a323d] rounded-xl px-3.5 py-2.5 text-slate-100 focus:outline-none focus:border-[#a3e635] transition font-sans" placeholder="recruiter@company.com" />
-            </div>
-
-            <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <label class="block text-slate-300 font-semibold font-mono text-[11px] uppercase tracking-wider">Password</label>
-                <button type="button" onclick="togglePasswordVisibility('landingPassword', 'btnTogglePwdIcon')" class="text-[10px] text-slate-400 hover:text-[#a3e635] transition font-mono flex items-center space-x-1">
-                  <span id="btnTogglePwdIcon">Show</span>
-                </button>
-              </div>
-              <input id="landingPassword" type="password" value="admin123" class="w-full bg-[#0b0c0e] border border-[#2a323d] rounded-xl px-3.5 py-2.5 text-slate-100 focus:outline-none focus:border-[#a3e635] transition font-sans" placeholder="Enter password" />
-            </div>
-
-            <div class="p-3 rounded-xl bg-[#1e240e]/60 border border-[#a3e635]/25 text-[#bef264] text-[11px] leading-relaxed font-sans">
-              <strong>Enterprise Workspace:</strong> Default demo credentials provided. Your session isolation tokens are generated on sign-in.
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="space-y-2 pt-2">
-            <button id="btnLandingSignIn" onclick="handleLandingSignIn()" class="w-full py-2.5 rounded-xl bg-[#a3e635] hover:bg-[#bef264] text-slate-950 font-bold text-xs shadow-[0_0_20px_rgba(163,230,53,0.3)] transition flex items-center justify-center space-x-2 cursor-pointer">
-              <span>Sign In to Dashboard</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 text-slate-950"></i>
-            </button>
-            <button onclick="enterDemoDirectly()" class="w-full py-2 rounded-xl bg-[#16191f] hover:bg-[#1e242d] border border-[#2a323d] text-slate-300 font-medium text-xs transition">
-              Explore Live Demo As Jordan Davis
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Bottom Footer Row with Latency & 3D Pause Control -->
-    <footer class="relative z-10 w-full border-t border-[#1e242d] px-6 lg:px-12 py-3 flex items-center justify-between text-xs text-slate-500 backdrop-blur-xs bg-[#0b0c0e]/80">
-      
-
-      <div class="flex items-center space-x-4">
-        <!-- Pause 3D Button -->
-        <button id="btnPause3d" onclick="togglePause3d()" class="px-3 py-1 rounded-lg bg-[#16191f] hover:bg-[#1e242d] border border-[#2a323d] text-slate-300 text-[11px] font-mono flex items-center space-x-1.5 transition">
-          <i data-lucide="pause" class="w-3 h-3 text-[#a3e635]"></i>
-          <span id="btnPause3dText">PAUSE 3D</span>
-        </button>
-      </div>
-    </footer>
-  </section>
+  
 
 
   <!-- ==================== TOP NAVIGATION BAR ==================== -->
@@ -337,7 +192,7 @@
     <div class="flex items-center space-x-3">
       <!-- Recruiter Profile (Clickable to switch / login) -->
       <button onclick="openRecruiterModal()" title="Switch Recruiter / Login (Personal Data Isolated)" class="flex items-center space-x-2 pl-2 border-l border-slate-200 hover:opacity-80 transition cursor-pointer">
-        <div id="headerRecruiterAvatar" class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-xs font-bold text-white shadow-xs">
+        <div id="headerRecruiterAvatar" class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-xs font-bold text-slate-900 shadow-xs">
           JD
         </div>
         <div class="hidden lg:block text-left">
@@ -363,18 +218,18 @@
           <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2 px-3">
             Core Workspace
           </div>
-          <div class="px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-[#a3e635]">
+          <div class="px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-700">
             Workspace
           </div>
           <nav class="space-y-1.5 text-xs font-medium">
             <button onclick="switchTab('overview')" id="tabBtn-overview" class="sidebar-nav-btn sidebar-nav-btn-active">
-              <i data-lucide="layout-dashboard" class="w-4 h-4 text-[#a3e635] shrink-0"></i>
+              <i data-lucide="layout-dashboard" class="w-4 h-4 text-emerald-700 shrink-0"></i>
               <span class="truncate">Overview</span>
             </button>
             <button onclick="switchTab('screening')" id="tabBtn-screening" class="sidebar-nav-btn sidebar-nav-btn-inactive">
-              <i data-lucide="scan-search" class="w-4 h-4 text-[#a3e635] shrink-0"></i>
+              <i data-lucide="scan-search" class="w-4 h-4 text-emerald-700 shrink-0"></i>
               <span class="truncate">AI Resume Screening</span>
-              <span class="ml-auto px-2 py-0.5 text-[9px] font-mono font-bold rounded-full bg-[#1e240e] text-[#a3e635] border border-[#a3e635]/30 shrink-0">AI</span>
+              <span class="ml-auto px-2 py-0.5 text-[9px] font-mono font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">AI</span>
             </button>
             <button onclick="switchTab('history')" id="tabBtn-history" class="sidebar-nav-btn sidebar-nav-btn-inactive">
               <i data-lucide="history" class="w-4 h-4 text-purple-400 shrink-0"></i>
@@ -384,7 +239,7 @@
             <button onclick="switchTab('candidates')" id="tabBtn-candidates" class="sidebar-nav-btn sidebar-nav-btn-inactive">
               <i data-lucide="users" class="w-4 h-4 text-sky-400 shrink-0"></i>
               <span class="truncate">Candidates Pipeline</span>
-              <span id="badgeCandidateCount" class="ml-auto px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-[#16191f] text-slate-300 border border-[#2a323d] shrink-0">15</span>
+              <span id="badgeCandidateCount" class="ml-auto px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-slate-50 text-slate-700 border border-slate-200 shrink-0">15</span>
             </button>
           </nav>
         </div>
@@ -426,7 +281,7 @@
             <p class="text-xs text-slate-500 mt-1">Real-time candidate rankings powered by connected SentenceTransformers and single-shot classifiers.</p>
           </div>
           <div class="flex items-center space-x-2">
-            <button onclick="switchTab('screening')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm flex items-center space-x-1.5 transition">
+            <button onclick="switchTab('screening')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-900 text-xs font-semibold shadow-sm flex items-center space-x-1.5 transition">
               <i data-lucide="plus" class="w-4 h-4"></i>
               <span>Screen New Resumes</span>
             </button>
@@ -735,7 +590,7 @@
                 </select>
               </div>
 
-              <button onclick="switchScreeningSubtab('upload')" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-bold flex items-center space-x-1.5 shadow-xs transition">
+              <button onclick="switchScreeningSubtab('upload')" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-slate-900 font-bold flex items-center space-x-1.5 shadow-xs transition">
                 <i data-lucide="upload" class="w-3.5 h-3.5"></i>
                 <span>Upload Resumes</span>
               </button>
@@ -868,19 +723,15 @@
                   <div class="flex items-center justify-between text-xs font-bold">
                     <span id="scanStatusText" class="text-brand-700 flex items-center space-x-1.5">
                       <span class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-ping"></span>
-                      <span>Processing Resumes & Scoring Embeddings...</span>
+                      <span id="scanStatusTitle">Processing Resumes &amp; Scoring Embeddings...</span>
                     </span>
-                    <span id="scanPercentText" class="font-mono text-slate-600">0%</span>
+                    <span id="scanPercentText" class="font-mono text-slate-800 font-bold">0%</span>
                   </div>
                   <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                    <div id="scanProgressBar" class="bg-brand-600 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+                    <div id="scanProgressBar" class="bg-brand-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                   </div>
-                  <div class="space-y-1 text-[11px] text-slate-600 font-mono">
-                    <div class="flex items-center space-x-1.5 text-brand-600 font-bold"><span>▸ 1. PDF/DOCX Text Extraction</span></div>
-                    <div class="flex items-center space-x-1.5 text-slate-500"><span>• 2. Entity Parsing (Name, Email, Phone, Skills, Exp)</span></div>
-                    <div class="flex items-center space-x-1.5 text-slate-500"><span>• 3. MiniLM-L6-v2 Semantic Similarity</span></div>
-                    <div class="flex items-center space-x-1.5 text-slate-500"><span>• 4. Categorization (Selected &gt;=70, Maybe 50-69, Rejected &lt;50)</span></div>
-                  </div>
+                  <!-- Per-File Status List -->
+                  <div id="scanPerFileList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
                 </div>
 
                 <!-- Scan Results Notice -->
@@ -888,7 +739,7 @@
               </div>
 
               <!-- Scan Button -->
-              <button id="btnStartScreening" onclick="startBatchScreening()" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 flex items-center justify-center space-x-2 transition mt-4">
+              <button id="btnStartScreening" onclick="startBatchScreening()" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-900 text-xs font-bold shadow-md shadow-brand-500/20 flex items-center justify-center space-x-2 transition mt-4">
                 <i data-lucide="sparkles" class="w-4 h-4"></i>
                 <span id="btnStartScreeningText">Start AI Resume Screening</span>
               </button>
@@ -987,7 +838,7 @@
               <h2 class="text-base font-bold text-slate-900">Active Job Postings</h2>
               <p class="text-xs text-slate-500">Create and manage target job specifications and required technical criteria.</p>
             </div>
-            <button onclick="openCreateJobModal()" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center space-x-1.5 shadow-xs transition">
+            <button onclick="openCreateJobModal()" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-900 text-xs font-bold flex items-center space-x-1.5 shadow-xs transition">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i>
               <span>Create Job Posting</span>
             </button>
@@ -1265,7 +1116,7 @@
             <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Executive Screening Reports</h1>
             <p class="text-xs text-slate-500 mt-1">Download and print formal candidate review dossiers.</p>
           </div>
-          <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center space-x-1.5 transition">
+          <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-900 text-xs font-semibold flex items-center space-x-1.5 transition">
             <i data-lucide="printer" class="w-4 h-4"></i>
             <span>Print Dossier</span>
           </button>
@@ -1292,7 +1143,7 @@
             <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Platform Settings & Governance</h1>
             <p class="text-xs text-slate-500 mt-1">Configure algorithmic scoring thresholds, blind screening policies, and compliance rules.</p>
           </div>
-          <button onclick="savePlatformSettings()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition">
+          <button onclick="savePlatformSettings()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-900 text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition">
             <i data-lucide="save" id="saveSettingsIcon" class="w-4 h-4"></i>
             <span id="saveSettingsText">Save Settings</span>
           </button>
@@ -1535,7 +1386,7 @@
 
         <div class="pt-4 border-t border-slate-200 flex justify-end space-x-2">
           <button onclick="closeCandidateDrawer()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">Close</button>
-          <button onclick="alert('Candidate advanced to Technical Interview!')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold">Advance Candidate</button>
+          <button onclick="alert('Candidate advanced to Technical Interview!')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-900 text-xs font-semibold">Advance Candidate</button>
         </div>
       </div>
     </div>
@@ -2198,18 +2049,46 @@
       btn.disabled = true;
       btn.classList.add('opacity-50');
 
-      // Animate progress simulation
-      let progress = 15;
-      progressBar.style.width = `${progress}%`;
-      percentText.textContent = `${progress}%`;
+      const totalCount = state.stagedFiles.length;
+      const fileListContainer = document.getElementById('scanPerFileList');
+      const statusTitle = document.getElementById('scanStatusTitle') || statusText;
 
-      const timer = setInterval(() => {
-        if (progress < 85) {
-          progress += 15;
-          progressBar.style.width = `${progress}%`;
-          percentText.textContent = `${progress}%`;
+      // Initialize real per-file tracking in UI
+      if (fileListContainer) {
+        fileListContainer.innerHTML = state.stagedFiles.map((f, i) => `
+          <div id="file-task-item-${i}" class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 text-xs shadow-xs">
+            <div class="flex items-center space-x-2 truncate pr-2">
+              <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+              <span class="font-mono text-slate-800 truncate">${f.name}</span>
+            </div>
+            <span id="file-task-badge-${i}" class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-600 shrink-0">
+              Queued
+            </span>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      }
+
+      progressBar.style.width = '10%';
+      percentText.textContent = '10%';
+      if (statusTitle) statusTitle.textContent = `Queued ${totalCount} file(s) for screening...`;
+
+      // Real-time animation across stages while server evaluates
+      let stepIdx = 0;
+      const stageTimer = setInterval(() => {
+        if (stepIdx < totalCount) {
+          const badge = document.getElementById(`file-task-badge-${stepIdx}`);
+          if (badge && badge.textContent.trim() === 'Queued') {
+            badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-blue-100 text-blue-700 shrink-0 flex items-center space-x-1';
+            badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping"></span><span>Extracting...</span>';
+          }
+          const pct = Math.min(85, Math.round(((stepIdx + 0.5) / totalCount) * 100));
+          progressBar.style.width = `${pct}%`;
+          percentText.textContent = `${pct}%`;
+          if (statusTitle) statusTitle.textContent = `Screening ${stepIdx + 1} of ${totalCount} resume file(s)...`;
+          stepIdx++;
         }
-      }, 350);
+      }, 700);
 
       try {
         const formData = new FormData();
@@ -2224,22 +2103,58 @@
           body: formData
         });
 
-        clearInterval(timer);
-        progressBar.style.width = '100%';
-        percentText.textContent = '100%';
+        clearInterval(stageTimer);
 
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.detail || `Server returned ${res.status}`);
+          throw new Error(errData.detail || errData.message || `Server returned ${res.status}`);
         }
 
         const data = await res.json();
+
+        // Update progress bar to 100% ONLY on successful server response
+        progressBar.style.width = '100%';
+        percentText.textContent = '100%';
+        if (statusTitle) statusTitle.textContent = `Completed screening ${data.total_processed || 0} candidate(s)`;
+
+        // Update each file's real final status in per-file list
+        if (fileListContainer && data.candidates) {
+          const cands = data.candidates || [];
+          const errs = data.errors || [];
+          
+          state.stagedFiles.forEach((f, i) => {
+            const badge = document.getElementById(`file-task-badge-${i}`);
+            if (!badge) return;
+            const cand = cands.find(c => c.filename === f.name);
+            const errItem = errs.find(e => e.filename === f.name);
+
+            if (cand) {
+              if (cand.status === 'FRAUD' || cand.is_fraud) {
+                badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-100 text-rose-800 shrink-0';
+                badge.textContent = 'FRAUD FLAGGED';
+              } else if (cand.is_duplicate) {
+                badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-800 shrink-0';
+                badge.textContent = `Duplicate (${cand.score}%)`;
+              } else {
+                badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 shrink-0';
+                badge.textContent = `Done (${cand.score}%)`;
+              }
+            } else if (errItem) {
+              badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-100 text-rose-800 shrink-0';
+              badge.textContent = `Failed: ${errItem.error || 'Extraction error'}`;
+            } else {
+              badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-700 shrink-0';
+              badge.textContent = 'Processed';
+            }
+          });
+        }
         
-        // Show completion notice without "Go to Dashboard" button
+        // Show completion notice
         notice.classList.remove('hidden');
         notice.className = 'p-4 rounded-xl border border-emerald-200 bg-emerald-50 text-xs space-y-1.5';
 
         const dupCount = (data.candidates || []).filter(c => c.is_duplicate).length;
+        const errCount = (data.errors || []).length;
         notice.innerHTML = `
           <div class="font-bold text-emerald-900 flex items-center space-x-1.5">
             <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
@@ -2247,7 +2162,8 @@
           </div>
           <p class="text-emerald-800">
             Results, scores, decisions, and reasoning for <strong>${data.job_evaluated}</strong> are presented directly down below.
-            ${dupCount > 0 ? `<br><span class="text-amber-800 text-[11px]">Notice: ${dupCount} duplicate candidate profile(s) recognized and re-screened.</span>` : ''}
+            ${dupCount > 0 ? `<br><span class="text-amber-800 text-[11px]">Notice: ${dupCount} duplicate candidate profile(s) recognized and updated.</span>` : ''}
+            ${errCount > 0 ? `<br><span class="text-rose-800 text-[11px]">Warning: ${errCount} file(s) failed with unreadable text layer.</span>` : ''}
           </p>
         `;
         lucide.createIcons();
@@ -2263,15 +2179,26 @@
         fetchScreeningDashboard();
         loadScreeningHistory();
       } catch (err) {
-        clearInterval(timer);
+        clearInterval(stageTimer);
+        // Reset progress bar on failure - NEVER show 100% on failure!
+        progressBar.style.width = '0%';
+        percentText.textContent = '0%';
+        if (statusTitle) statusTitle.textContent = 'Screening Failed';
+
         notice.classList.remove('hidden');
-        notice.className = 'p-4 rounded-xl border border-rose-200 bg-rose-50 text-xs space-y-1 text-rose-800';
+        notice.className = 'p-4 rounded-xl border border-rose-200 bg-rose-50 text-xs space-y-2 text-rose-800';
         notice.innerHTML = `
-          <div class="font-bold flex items-center space-x-1.5">
+          <div class="font-bold flex items-center space-x-1.5 text-rose-900">
             <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600"></i>
             <span>Screening Failed</span>
           </div>
-          <p>${err.message}</p>
+          <p class="text-xs text-rose-700 leading-relaxed">${err.message}</p>
+          <div class="pt-1">
+            <button onclick="startBatchScreening()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center space-x-1.5 cursor-pointer shadow-xs transition">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Retry Screening</span>
+            </button>
+          </div>
         `;
         lucide.createIcons();
       } finally {
@@ -3328,14 +3255,14 @@
     function enterDemoDirectly() {
       targetZoomFactor = 1.8;
       setTimeout(() => {
-        document.getElementById('view-landing-auth').classList.add('hidden');
+        
         switchTab('overview');
         loadData();
       }, 250);
     }
 
     function openLandingAuthView() {
-      document.getElementById('view-landing-auth').classList.remove('hidden');
+      
       targetZoomFactor = 1.0;
       if (is3dPaused) render3DFrame();
     }
@@ -3423,7 +3350,7 @@
         // Smooth camera zoom transition into dashboard
         targetCameraZ = 1.6;
         setTimeout(() => {
-          document.getElementById('view-landing-auth').classList.add('hidden');
+          
           switchTab('overview');
           loadData();
         }, 380);
@@ -3441,14 +3368,14 @@
     function enterDemoDirectly() {
       targetCameraZ = 1.6;
       setTimeout(() => {
-        document.getElementById('view-landing-auth').classList.add('hidden');
+        
         switchTab('overview');
         loadData();
       }, 300);
     }
 
     function openLandingAuthView() {
-      document.getElementById('view-landing-auth').classList.remove('hidden');
+      
       targetCameraZ = 5.0;
       if (!threeScene) init3DScene();
     }
@@ -3585,7 +3512,7 @@
 
       list.forEach((c, idx) => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-[#16191f] transition border-b border-[#1e242d]';
+        tr.className = 'hover:bg-slate-50 transition border-b border-slate-200';
 
         const isChecked = state.selectedCompareIds.has(c.candidate_id || c.id);
         const domain = c.job_title || c.title || c.predicted_tech_role || 'Distributed Systems';
@@ -3892,15 +3819,15 @@
               {
                 label: 'Screened Resumes',
                 data: [12, 18, 24, 19, 28, 22, 31, 26],
-                borderColor: '#a3e635',
-                backgroundColor: 'rgba(163, 230, 53, 0.12)',
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.08)',
                 tension: 0.35,
                 fill: true
               },
               {
                 label: 'Shortlisted Fit',
                 data: [3, 5, 7, 4, 9, 6, 10, 8],
-                borderColor: '#65a30d',
+                borderColor: '#10b981',
                 backgroundColor: 'transparent',
                 tension: 0.35,
                 borderDash: [4, 4]
@@ -3912,8 +3839,8 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-              x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', font: { size: 10, family: 'monospace' } } },
-              y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', font: { size: 10, family: 'monospace' } } }
+              x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 10 } } },
+              y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 10 } } }
             }
           }
         });
@@ -3927,9 +3854,9 @@
             labels: ['Exceptional', 'Strong', 'Moderate', 'Low'],
             datasets: [{
               data: [8, 14, 18, 6],
-              backgroundColor: ['#a3e635', '#65a30d', '#ca8a04', '#334155'],
+              backgroundColor: ['#2563eb', '#0ea5e9', '#f59e0b', '#cbd5e1'],
               borderWidth: 2,
-              borderColor: '#121418'
+              borderColor: '#ffffff'
             }]
           },
           options: {
@@ -3937,35 +3864,6 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             cutout: '72%'
-          }
-        });
-          }
-
-      const ctx3 = document.getElementById('semanticScatterChart');
-      if (ctx3) {
-        new Chart(ctx3, {
-          type: 'scatter',
-          data: {
-            datasets: [{
-              label: 'Candidates',
-              data: [
-                { x: 92, y: 94 }, { x: 88, y: 84 }, { x: 74, y: 89 },
-                { x: 82, y: 78 }, { x: 65, y: 82 }, { x: 91, y: 86 },
-                { x: 70, y: 72 }, { x: 85, y: 91 }, { x: 60, y: 64 }
-              ],
-              backgroundColor: '#2563eb',
-              pointRadius: 6,
-              pointHoverRadius: 9
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              x: { title: { display: true, text: 'Keyword Lexical Overlap (%)', color: '#64748b' }, grid: { color: '#f1f5f9' } },
-              y: { title: { display: true, text: 'Dense Semantic Depth (%) (MiniLM-L6-v2)', color: '#64748b' }, grid: { color: '#f1f5f9' } }
-            }
           }
         });
       }
@@ -4102,7 +4000,7 @@
       <div class="space-y-2">
         <div class="flex space-x-2">
           <input id="copilotQueryInput" type="text" placeholder="e.g. candidates with over 4 years of Kafka who have led a team" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-indigo-500 font-sans" onkeydown="if(event.key==='Enter') executeCopilotQuery()" />
-          <button onclick="executeCopilotQuery()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shrink-0 shadow-xs transition">
+          <button onclick="executeCopilotQuery()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-slate-900 font-bold text-xs shrink-0 shadow-xs transition">
             Ask Copilot
           </button>
         </div>
@@ -4316,7 +4214,7 @@
               <label class="block text-slate-700 font-semibold mb-1">Reason / Note</label>
               <div class="flex space-x-2">
                 <input id="modalOverrideReason" type="text" placeholder="e.g. Strong referral or open-source portfolio" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs" />
-                <button onclick="submitManualOverride()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg shrink-0 transition">Save Override</button>
+                <button onclick="submitManualOverride()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-slate-900 font-bold rounded-lg shrink-0 transition">Save Override</button>
               </div>
             </div>
           </div>
@@ -4405,7 +4303,7 @@
 
       <div class="pt-3 border-t border-slate-200 flex justify-end space-x-2">
         <button onclick="closeCreateJobModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">Cancel</button>
-        <button onclick="submitCreateJob()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition">Create Job Posting</button>
+        <button onclick="submitCreateJob()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-900 text-xs font-bold transition">Create Job Posting</button>
       </div>
     </div>
   </div>
@@ -4440,7 +4338,7 @@
 
       <div class="pt-3 border-t border-slate-200 flex justify-end space-x-2">
         <button onclick="closeRecruiterModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">Cancel</button>
-        <button onclick="submitRecruiterLogin()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition">Sign In & Load Workspace</button>
+        <button onclick="submitRecruiterLogin()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-900 text-xs font-bold transition">Sign In & Load Workspace</button>
       </div>
     </div>
   </div>

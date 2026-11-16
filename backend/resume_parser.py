@@ -208,11 +208,14 @@ def evaluate_resume_against_job(
     selected_threshold: float = 70.0,
     maybe_threshold: float = 50.0,
     nlp_engine = None,
-    resume_engine = None
+    resume_engine = None,
+    resume_emb = None,
+    jd_emb = None
 ) -> Dict[str, Any]:
     """
     Computes match score (0-100), decision status (Selected, Maybe, Rejected),
     matched skills, missing skills, and detailed AI reasoning.
+    Accepts precomputed resume_emb and jd_emb for blazing-fast batch performance.
     """
     resume_text = parsed_candidate.get("raw_text", "")
     cand_skills = [s.lower() for s in parsed_candidate.get("skills", [])]
@@ -253,9 +256,11 @@ def evaluate_resume_against_job(
         ratio = max(0.2, cand_exp / max(min_exp, 1.0))
         exp_score = round(ratio * 75.0, 1)
 
-    # Semantic similarity score
+    # Semantic similarity score (fast path with precomputed embeddings)
     semantic_score = keyword_score  # fallback
-    if nlp_engine and hasattr(nlp_engine, "compute_semantic_similarity"):
+    if resume_emb is not None and jd_emb is not None and nlp_engine and hasattr(nlp_engine, "compute_semantic_similarity_with_embeddings"):
+        semantic_score = nlp_engine.compute_semantic_similarity_with_embeddings(jd_emb, resume_emb)
+    elif nlp_engine and hasattr(nlp_engine, "compute_semantic_similarity"):
         try:
             jd_desc = job.get("description", "") + " " + " ".join(req_skills)
             semantic_score = nlp_engine.compute_semantic_similarity(jd_desc, resume_text)
@@ -277,9 +282,14 @@ def evaluate_resume_against_job(
     else:
         status = "Rejected"
 
-    # Connected models classification
+    # Connected models classification (fast path with precomputed embedding)
     model_predictions = {}
-    if resume_engine and hasattr(resume_engine, "classify_all_models"):
+    if resume_emb is not None and resume_engine and hasattr(resume_engine, "classify_with_embedding"):
+        try:
+            model_predictions = resume_engine.classify_with_embedding(resume_emb)
+        except Exception:
+            pass
+    elif resume_engine and hasattr(resume_engine, "classify_all_models"):
         try:
             model_predictions = resume_engine.classify_all_models(resume_text)
         except Exception:

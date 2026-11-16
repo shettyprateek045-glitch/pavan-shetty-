@@ -123,19 +123,20 @@ class ResumeIntelligenceService:
             logger.error(f"Error parsing PDF: {e}")
             return ""
 
-    def classify_all_models(self, text: str) -> Dict[str, Any]:
-        """Runs single-shot inference on all connected models."""
-        results = {}
+    def get_embedding(self, text: str):
+        """Generates or returns tensor embedding using the shared SentenceTransformer."""
         cleaned = self.clean_text(text)
-        if not cleaned:
-            return {"error": "Empty text after cleaning"}
-
-        if not self.encoder_loaded or self.encoder is None:
-            return {"error": "Sentence Transformer encoder not loaded"}
-
+        if not cleaned or not self.encoder_loaded or self.encoder is None:
+            return None
         with torch.no_grad():
-            emb = self.encoder.encode([cleaned], convert_to_tensor=True).to(self.device)
+            return self.encoder.encode([cleaned], convert_to_tensor=True).to(self.device)
 
+    def classify_with_embedding(self, emb) -> Dict[str, Any]:
+        """Runs fast single-shot inference on precomputed tensor embedding."""
+        results = {}
+        if emb is None:
+            return results
+        with torch.no_grad():
             for key, item in self.models.items():
                 m = item["model"]
                 c_list = item["classes"]
@@ -146,6 +147,18 @@ class ResumeIntelligenceService:
                     for i in top3_idx
                 ]
         return results
+
+    def classify_all_models(self, text: str) -> Dict[str, Any]:
+        """Runs single-shot inference on all connected models."""
+        cleaned = self.clean_text(text)
+        if not cleaned:
+            return {"error": "Empty text after cleaning"}
+
+        if not self.encoder_loaded or self.encoder is None:
+            return {"error": "Sentence Transformer encoder not loaded"}
+
+        emb = self.get_embedding(cleaned)
+        return self.classify_with_embedding(emb)
 
     def analyze_ats_resume(self, text: str, job_description: Optional[str] = None) -> Dict[str, Any]:
         """

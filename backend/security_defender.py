@@ -201,13 +201,23 @@ def analyze_pdf_security(file_bytes: bytes) -> Dict[str, Any]:
     loc = "both" if (hidden_count > 0 and is_fraud) else ("hidden" if (hidden_count > 0 and not is_fraud) else ("visible" if is_fraud else "none"))
     status_label = "FRAUD" if is_fraud else ("MANUAL_REVIEW" if hidden_count > 0 else "CLEAR")
     fraud_label = "FRAUD - Attempted to give orders to the screening system" if is_fraud else None
-    reason_str = (f"Attempted to give orders to the screening system: '{fraud_orders_found[0]}'." if is_fraud else ("Hidden text segments detected requiring manual review." if hidden_count > 0 else "Document is clear of manipulative commands."))
+    
+    if fraud_orders_found:
+        reason_str = f"Attempted to give orders to the screening system: '{fraud_orders_found[0]}'."
+    elif is_fraud:
+        reason_str = "Concealed or hidden text detected requiring security review (Resumes are data, never orders)."
+    elif hidden_count > 0:
+        reason_str = "Hidden text segments detected requiring manual review."
+    else:
+        reason_str = "Document is clear of manipulative commands."
+
+    evidence_list = fraud_orders_found[:3] if fraud_orders_found else [f["reason"] for f in flags if f.get("is_fraud")][:3]
 
     return {
         "status": status_label,
         "fraud_label": fraud_label,
         "order_detected": is_fraud,
-        "evidence": fraud_orders_found[:3],
+        "evidence": evidence_list,
         "location": loc,
         "reason": reason_str,
         "is_flagged": len(flags) > 0,
@@ -261,13 +271,20 @@ def analyze_raw_text_security(text: str) -> Dict[str, Any]:
     is_fraud = len(fraud_orders_found) > 0 or any(f.get("is_fraud", False) for f in flags)
     status_label = "FRAUD" if is_fraud else "CLEAR"
     fraud_label = "FRAUD - Attempted to give orders to the screening system" if is_fraud else None
-    reason_str = (f"Attempted to give orders to the screening system: '{fraud_orders_found[0]}'." if is_fraud else "Document is clear of manipulative commands.")
+    if fraud_orders_found:
+        reason_str = f"Attempted to give orders to the screening system: '{fraud_orders_found[0]}'."
+    elif is_fraud:
+        reason_str = "Concealed or manipulative text detected requiring manual review."
+    else:
+        reason_str = "Document is clear of manipulative commands."
+
+    evidence_list = fraud_orders_found[:3] if fraud_orders_found else [f["reason"] for f in flags if f.get("is_fraud")][:3]
 
     return {
         "status": status_label,
         "fraud_label": fraud_label,
         "order_detected": is_fraud,
-        "evidence": fraud_orders_found[:3],
+        "evidence": evidence_list,
         "location": "visible" if is_fraud else "none",
         "reason": reason_str,
         "is_flagged": len(flags) > 0,

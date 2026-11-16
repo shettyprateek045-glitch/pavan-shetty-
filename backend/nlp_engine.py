@@ -111,7 +111,19 @@ def compute_keyword_similarity(jd_text: str, resume_text: str, required_skills: 
     raw_score = (skill_match_ratio * 0.70) + (min(cosine * 5.0, 1.0) * 0.30)
     return round(raw_score * 100, 1)
 
-def compute_semantic_similarity(jd_text: str, resume_text: str, required_skills: List[str]) -> float:
+def compute_semantic_similarity_with_embeddings(jd_emb, res_emb) -> float:
+    """Fast semantic similarity using precomputed PyTorch tensor embeddings."""
+    if jd_emb is not None and res_emb is not None:
+        try:
+            import torch
+            cos = torch.cosine_similarity(jd_emb, res_emb).item()
+            norm = max(0.0, min(100.0, (cos + 0.15) / 1.15 * 100.0))
+            return round(norm, 1)
+        except Exception:
+            pass
+    return 75.0
+
+def compute_semantic_similarity(jd_text: str, resume_text: str, required_skills: List[str] = None) -> float:
     """
     Compute dense semantic context similarity.
     Evaluates functional concept overlap, architecture depth, and domain seniority.

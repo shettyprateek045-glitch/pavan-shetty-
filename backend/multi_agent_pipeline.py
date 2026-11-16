@@ -344,13 +344,17 @@ def run_multi_agent_evaluation(
     required_skills: List[str],
     jd_text: str = "",
     file_bytes: Optional[bytes] = None,
-    file_type: str = "pdf"
+    file_type: str = "pdf",
+    security_report: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
     Executes all specialized agents in sequence and returns complete structured artifact JSON.
+    Reuses precomputed security_report if provided for high-speed batch throughput.
     """
     # Stage 1: Security & Prompt-Injection Defender
-    if file_bytes and file_type == "pdf":
+    if security_report is not None:
+        security_artifact = security_report
+    elif file_bytes and file_type == "pdf":
         from backend.security_defender import analyze_pdf_security
         security_artifact = analyze_pdf_security(file_bytes)
     else:

@@ -16,8 +16,11 @@ DB_DIR.mkdir(parents=True, exist_ok=True)
 DB_PATH = DB_DIR / "screening.db"
 
 def get_connection():
-    conn = sqlite3.connect(str(DB_PATH))
+    conn = sqlite3.connect(str(DB_PATH), timeout=60.0)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL;")
+    conn.execute("PRAGMA busy_timeout=60000;")
+    conn.execute("PRAGMA synchronous=NORMAL;")
     return conn
 
 def init_db():
@@ -56,7 +59,7 @@ def init_db():
     )
     """)
 
-    # Candidates table (with duplicate detection on recruiter_id + email)
+    # Candidates table (with duplicate detection on recruiter_id + file_hash / email)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS candidates (
         id TEXT PRIMARY KEY,
@@ -71,10 +74,17 @@ def init_db():
         original_filename TEXT,
         file_type TEXT,
         file_size INTEGER DEFAULT 0,
+        file_hash TEXT,
         created_at TEXT NOT NULL,
         FOREIGN KEY (recruiter_id) REFERENCES recruiters(id)
     )
     """)
+
+    # Safe migration: ensure file_hash column exists
+    try:
+        cursor.execute("ALTER TABLE candidates ADD COLUMN file_hash TEXT;")
+    except Exception:
+        pass
 
     # Screenings table
     cursor.execute("""
@@ -110,6 +120,19 @@ def init_db():
         blind_screening INTEGER DEFAULT 0,
         updated_at TEXT NOT NULL,
         FOREIGN KEY (recruiter_id) REFERENCES recruiters(id)
+    )
+    """)
+
+    # Agent evaluations table
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS agent_evaluations (
+        screening_id TEXT PRIMARY KEY,
+        security_report TEXT,
+        entities_report TEXT,
+        alignment_report TEXT,
+        anomalies_report TEXT,
+        interview_questions TEXT,
+        created_at TEXT NOT NULL
     )
     """)
 
@@ -198,6 +221,8 @@ def seed_defaults(cursor, conn):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, initial_jobs)
         conn.commit()
+
+    conn.close()
 
 # Initialize tables immediately on module load
 init_db()
