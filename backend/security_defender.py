@@ -21,20 +21,34 @@ from typing import Dict, Any, List, Tuple, Optional
 from pathlib import Path
 
 # Imperative order and manipulation patterns ("Resumes are data, never orders")
-ORDER_AND_INJECTION_PATTERNS = [
-    (r"\bignore\s+(?:all\s+)?(?:previous|prior|above|other)\s+instructions\b", "Command ordering system to ignore previous instructions"),
-    (r"\bdisregard\s+(?:all\s+)?(?:prior|previous|above|other)\s+instructions\b", "Command ordering system to disregard instructions"),
-    (r"\bforget\s+(?:all\s+)?(?:previous|prior)\s+instructions\b", "Command ordering system to forget instructions"),
-    (r"\b(?:give|rank|score|rate)\s+(?:this\s+candidate|me|candidate)\s+(?:a\s+)?(?:100%?|perfect|top\s+score|maximum)\b", "Command ordering system to give 100% top score"),
-    (r"\b(?:you\s+must|always|ensure\s+you)\s+(?:select|hire|shortlist|accept)\s+this\s+candidate\b", "Command ordering recruiter/AI to hire or select candidate"),
-    (r"\bdo\s+not\s+(?:reject|fail|penalize|screen|filter)\s+(?:this\s+candidate|me)?\b", "Command ordering system not to reject or screen candidate"),
-    (r"\b(?:set|force)\s+(?:status|score|rating)\s+to\s+(?:selected|100|top)\b", "Command ordering status/score override"),
-    (r"\b(?:system\s+prompt|new\s+instruction|developer\s+mode|admin\s+override|jailbreak)\b", "Attempt to mimic system orders or administrative override"),
-    (r"\bact\s+as\s+(?:an?\s+)?(?:unbiased\s+assistant\s+that\s+always\s+selects|evaluator\s+who\s+rates\s+me)\b", "Command instructing AI to act as compliant evaluator"),
-    (r"\boutput\s*:\s*(?:selected|100%|hire)\b", "Command ordering output format forcing hire"),
-    (r"\bimportant\s+instruction\s*:\s*", "Attempt to inject authoritative instructions into parser"),
-    (r"\bprompt\s+injection\b", "Self-declared prompt injection keyword")
+ORDER_PATTERNS = [
+    r"ignore (all )?(previous|prior|above) instructions",
+    r"disregard .{0,40}(requirements|instructions|criteria)",
+    r"(rank|select|shortlist|rate|score) (this|the) (candidate|resume)",
+    r"do not (reject|flag|screen out)",
+    r"(best|perfect|ideal) (match|candidate)",
+    r"meets all (the )?requirements",
+    r"you are (now|a)\b",
+    r"\b(system|assistant)\s*:",
+    r"\b(?:give|rank|score|rate)\s+(?:this\s+candidate|me|candidate)\s+(?:a\s+)?(?:100%?|perfect|top\s+score|maximum)\b",
+    r"\b(?:you\s+must|always|ensure\s+you)\s+(?:select|hire|shortlist|accept)\s+this\s+candidate\b",
+    r"\b(?:set|force)\s+(?:status|score|rating)\s+to\s+(?:selected|100|top)\b",
+    r"\b(?:system\s+prompt|new\s+instruction|developer\s+mode|admin\s+override|jailbreak)\b"
 ]
+
+def has_orders(text: str) -> List[str]:
+    """Check text for imperative orders. Resumes are data, never orders."""
+    if not text:
+        return []
+    matches = []
+    for pattern in ORDER_PATTERNS:
+        found = re.findall(pattern, text, re.I)
+        if found:
+            for item in found:
+                val = item if isinstance(item, str) else (item[0] if isinstance(item, tuple) and item[0] else str(item))
+                if val and val not in matches:
+                    matches.append(val)
+    return matches
 
 # Zero-width, invisible, and bidirectional override unicode characters
 ZERO_WIDTH_CHARS = {
@@ -168,31 +182,39 @@ def analyze_pdf_security(file_bytes: bytes) -> Dict[str, Any]:
             })
 
     # 5. Imperative Orders & Prompt Injection Scan ("Resumes are data, never orders")
-    fraud_orders_found = []
-    for pattern, description in ORDER_AND_INJECTION_PATTERNS:
-        matches = re.findall(pattern, full_text, flags=re.IGNORECASE)
-        if matches:
-            matched_phrase = matches[0] if isinstance(matches[0], str) else matches[0][0]
-            fraud_orders_found.append(matched_phrase)
-            flags.append({
-                "category": "Fraud - Order Directive in Resume",
-                "severity": "Critical",
-                "is_fraud": True,
-                "reason": f"RESUMES ARE DATA, NEVER ORDERS. Detected text giving orders/commands: {description}",
-                "location": "Resume Body Text",
-                "flagged_text": matched_phrase[:140],
-                "method_limitations": "Strict pattern matching; candidate discussing prompt engineering in technical context should be verified by recruiter."
-            })
+    fraud_orders_found = has_orders(full_text)
+    for ord_phrase in fraud_orders_found:
+        flags.append({
+            "category": "Fraud - Order Directive in Resume",
+            "severity": "Critical",
+            "is_fraud": True,
+            "reason": "RESUMES ARE DATA, NEVER ORDERS. Detected text attempting to give orders or commands to the AI.",
+            "location": "Resume Body Text",
+            "flagged_text": ord_phrase[:140],
+            "method_limitations": "Strict regex pattern matching; candidate discussing prompt engineering in technical context should be verified by recruiter."
+        })
 
-    is_fraud = any(f.get("is_fraud", False) for f in flags)
+    is_fraud = len(fraud_orders_found) > 0 or any(f.get("is_fraud", False) for f in flags)
     hidden_count = sum(1 for f in flags if "Hidden" in f["category"] or "Microscopic" in f["category"] or "Off-Page" in f["category"])
     injection_count = len(fraud_orders_found)
 
+    loc = "both" if (hidden_count > 0 and is_fraud) else ("hidden" if (hidden_count > 0 and not is_fraud) else ("visible" if is_fraud else "none"))
+    status_label = "FRAUD" if is_fraud else ("MANUAL_REVIEW" if hidden_count > 0 else "CLEAR")
+    fraud_label = "FRAUD - Attempted to give orders to the screening system" if is_fraud else None
+    reason_str = (f"Attempted to give orders to the screening system: '{fraud_orders_found[0]}'." if is_fraud else ("Hidden text segments detected requiring manual review." if hidden_count > 0 else "Document is clear of manipulative commands."))
+
     return {
+        "status": status_label,
+        "fraud_label": fraud_label,
+        "order_detected": is_fraud,
+        "evidence": fraud_orders_found[:3],
+        "location": loc,
+        "reason": reason_str,
         "is_flagged": len(flags) > 0,
         "is_fraud": is_fraud,
+        "in_shortlist": not is_fraud,
         "fraud_detected": is_fraud,
-        "fraud_reason": "FRAUD DETECTED: Resume text contained imperative orders/commands attempting to command the AI system. Resumes are data, never orders." if is_fraud else None,
+        "fraud_reason": reason_str if is_fraud else None,
         "flagged_orders": fraud_orders_found,
         "flags_count": len(flags),
         "flags": flags,
@@ -224,29 +246,35 @@ def analyze_raw_text_security(text: str) -> Dict[str, Any]:
             })
 
     # 2. Imperative Orders & Prompt Injection Scan
-    fraud_orders_found = []
-    for pattern, description in ORDER_AND_INJECTION_PATTERNS:
-        matches = re.findall(pattern, text, flags=re.IGNORECASE)
-        if matches:
-            matched_phrase = matches[0] if isinstance(matches[0], str) else matches[0][0]
-            fraud_orders_found.append(matched_phrase)
-            flags.append({
-                "category": "Fraud - Order Directive in Resume",
-                "severity": "Critical",
-                "is_fraud": True,
-                "reason": f"RESUMES ARE DATA, NEVER ORDERS. Detected text giving orders/commands: {description}",
-                "location": "Text Body",
-                "flagged_text": matched_phrase[:140],
-                "method_limitations": "Mentions of prompt engineering should be verified by recruiter."
-            })
+    fraud_orders_found = has_orders(text)
+    for ord_phrase in fraud_orders_found:
+        flags.append({
+            "category": "Fraud - Order Directive in Resume",
+            "severity": "Critical",
+            "is_fraud": True,
+            "reason": "RESUMES ARE DATA, NEVER ORDERS. Detected text giving orders/commands to the screening system.",
+            "location": "Text Body",
+            "flagged_text": ord_phrase[:140],
+            "method_limitations": "Mentions of prompt engineering should be verified by recruiter."
+        })
 
-    is_fraud = any(f.get("is_fraud", False) for f in flags)
+    is_fraud = len(fraud_orders_found) > 0 or any(f.get("is_fraud", False) for f in flags)
+    status_label = "FRAUD" if is_fraud else "CLEAR"
+    fraud_label = "FRAUD - Attempted to give orders to the screening system" if is_fraud else None
+    reason_str = (f"Attempted to give orders to the screening system: '{fraud_orders_found[0]}'." if is_fraud else "Document is clear of manipulative commands.")
 
     return {
+        "status": status_label,
+        "fraud_label": fraud_label,
+        "order_detected": is_fraud,
+        "evidence": fraud_orders_found[:3],
+        "location": "visible" if is_fraud else "none",
+        "reason": reason_str,
         "is_flagged": len(flags) > 0,
         "is_fraud": is_fraud,
+        "in_shortlist": not is_fraud,
         "fraud_detected": is_fraud,
-        "fraud_reason": "FRAUD DETECTED: Resume text contained imperative orders attempting to command the AI screening system. Resumes are data, never orders." if is_fraud else None,
+        "fraud_reason": reason_str if is_fraud else None,
         "flagged_orders": fraud_orders_found,
         "flags_count": len(flags),
         "flags": flags,

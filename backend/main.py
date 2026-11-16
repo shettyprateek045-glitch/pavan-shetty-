@@ -31,9 +31,8 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 # Import TalentRank AI Engines
-from synthetic_data import JOBS_DATABASE, CANDIDATES_DATABASE, FAIRNESS_AUDIT_BENCHMARK
+from synthetic_data import JOBS_DATABASE, CANDIDATES_DATABASE
 from nlp_engine import score_candidate, extract_matched_and_missing_skills
-from fairness_engine import analyze_job_description_bias, run_synthetic_fairness_audit, calculate_demographic_parity
 
 # Import Connected Models Engine
 try:
@@ -411,20 +410,6 @@ def get_analytics(job_id: Optional[str] = "job-lead-backend"):
         "recent_activity": recent_activity
     }
 
-@app.get("/api/fairness")
-def get_fairness_audit():
-    scored = [score_candidate(c, jobs_store[0]) for c in candidates_store]
-    live_audit = run_synthetic_fairness_audit(scored)
-    return {
-        "benchmark": FAIRNESS_AUDIT_BENCHMARK,
-        "live_cohort_audit": live_audit,
-        "jd_bias_sample": analyze_job_description_bias(jobs_store[0]["description"])
-    }
-
-@app.post("/api/fairness/analyze-jd")
-def analyze_jd(payload: Dict[str, str]):
-    text = payload.get("text", "")
-    return analyze_job_description_bias(text)
 
 # -------------------------------------------------------------
 # File Upload & Parsing (PDF, DOCX, TXT)

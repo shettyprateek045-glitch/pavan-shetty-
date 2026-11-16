@@ -298,6 +298,11 @@ async def upload_and_screen_resumes(
             resume_engine=resume_engine
         )
 
+        # If fraud (orders detected), mark status as FRAUD and remove from shortlist
+        final_status = "FRAUD" if is_fraud else eval_result["status"]
+        in_shortlist = False if is_fraud else (final_status == "Selected")
+        decision_reason = f"🚨 FRAUD DETECTED: Resumes are data, never orders. {fraud_reason}" if is_fraud else eval_result["decision_reason"]
+
         # 6. Store Screening Record
         screening_id = f"scr-{uuid.uuid4().hex[:8]}"
         cursor.execute("""
@@ -312,8 +317,8 @@ async def upload_and_screen_resumes(
             job["id"],
             recruiter_id,
             eval_result["overall_score"],
-            eval_result["status"],
-            eval_result["decision_reason"],
+            final_status,
+            decision_reason,
             json.dumps(eval_result["matched_skills"]),
             json.dumps(eval_result["missing_skills"]),
             json.dumps(eval_result["score_breakdown"]),
@@ -354,15 +359,18 @@ async def upload_and_screen_resumes(
             "filename": filename,
             "job_title": job["title"],
             "score": eval_result["overall_score"],
-            "status": eval_result["status"],
-            "decision_reason": eval_result["decision_reason"],
+            "status": final_status,
+            "in_shortlist": in_shortlist,
+            "decision_reason": decision_reason,
             "matched_skills": eval_result["matched_skills"],
             "missing_skills": eval_result["missing_skills"],
             "score_breakdown": eval_result["score_breakdown"],
             "model_predictions": eval_result["model_predictions"],
             "is_duplicate": is_duplicate,
             "is_fraud": is_fraud,
+            "fraud_label": "FRAUD - Attempted to give orders to the screening system" if is_fraud else None,
             "fraud_reason": fraud_reason,
+            "evidence": sec_report.get("evidence", flagged_orders),
             "flagged_orders": flagged_orders,
             "created_at": now
         })

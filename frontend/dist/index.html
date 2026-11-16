@@ -9,97 +9,314 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
+  <!-- Three.js 3D WebGL Engine -->
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             brand: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              200: '#bfdbfe',
-              300: '#93c5fd',
-              400: '#60a5fa',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              800: '#1e40af',
-              900: '#1e3a8a',
+              50: '#141a0b',
+              100: '#233010',
+              200: '#354914',
+              300: '#4d5a1a',
+              400: '#65a30d',
+              500: '#84cc16',
+              600: '#a3e635',
+              700: '#bef264',
+              800: '#d9f99d',
+              900: '#ecfccb',
             },
-            surface: {
-              50: '#f8fafc',
-              100: '#f1f5f9',
-              200: '#e2e8f0',
-              300: '#cbd5e1',
-              400: '#94a3b8',
-              500: '#64748b',
-              600: '#475569',
-              700: '#334155',
-              800: '#1e293b',
-              900: '#0f172a',
+            dark: {
+              base: '#0b0c0e',
+              panel: '#121418',
+              surface: '#16191f',
+              border: '#1e242d',
+              borderMuted: '#2a323d'
+            },
+            lime: {
+              neon: '#a3e635',
+              olive: '#4d5a1a',
+              dark: '#1e240e',
+              glow: 'rgba(163, 230, 53, 0.15)'
             }
           },
           fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
           }
         }
       }
-    }
+    };
   </script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
-
+    /* Global Offline Typography & Dark Theme */
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
     body {
-      background-color: #f8fafc;
-      color: #0f172a;
-      font-family: 'Inter', sans-serif;
+      background-color: #0b0c0e !important;
+      color: #f1f5f9 !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       overflow-x: hidden;
+      margin: 0;
+      padding: 0;
     }
-
-    /* Clean Card Styling */
+    /* Non-selectable UI Chrome */
+    header, nav, button, .status-chip, th {
+      user-select: none;
+      -webkit-user-select: none;
+    }
     .white-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+      background: #121418 !important;
+      border: 1px solid #1e242d !important;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+      color: #f1f5f9;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
     .white-card:hover {
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-      border-color: #cbd5e1;
+      border-color: rgba(163, 230, 53, 0.3) !important;
+      box-shadow: 0 8px 28px -4px rgba(163, 230, 53, 0.12) !important;
     }
-
-    /* Pulse glow */
-    .pulse-glow {
-      animation: pulseGlow 2s infinite ease-in-out;
+    /* Monospace uppercase chips */
+    .status-chip {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      background: #16191f;
+      border: 1px solid #2a323d;
+      color: #e2e8f0;
     }
-
-    @keyframes pulseGlow {
+    .status-chip-lime {
+      background: rgba(77, 90, 26, 0.35);
+      border: 1px solid rgba(163, 230, 53, 0.4);
+      color: #bef264;
+    }
+    .pulse-dot-lime {
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background-color: #a3e635;
+      box-shadow: 0 0 8px #a3e635;
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+    @keyframes pulseDot {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.08); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
-
+    /* Sidebar consistent layout */
+    .sidebar-nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .sidebar-nav-btn-active {
+      background: #1e240e !important;
+      border: 1px solid rgba(163, 230, 53, 0.4) !important;
+      color: #bef264 !important;
+      box-shadow: 0 0 15px rgba(163, 230, 53, 0.15);
+    }
+    .sidebar-nav-btn-inactive {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #94a3b8;
+    }
+    .sidebar-nav-btn-inactive:hover {
+      background: #16191f;
+      color: #ffffff;
+      border-color: #2a323d;
+    }
     /* Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #f1f5f9;
+      background: #0b0c0e;
     }
     ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
+      background: #1e242d;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
+      background: #4d5a1a;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-brand-500 selection:text-white">
+<body class="min-h-screen flex flex-col bg-[#0b0c0e] text-slate-100 selection:bg-[#a3e635] selection:text-slate-950">
+
+  <!-- ==================== 3D WIREFRAME SPHERE LANDING & AUTH VIEW ==================== -->
+  <section id="view-landing-auth" class="min-h-screen relative flex flex-col justify-between bg-[#0b0c0e] text-slate-100 overflow-hidden z-20">
+    <!-- Starfield & 3D Background Canvas Container -->
+    <div id="threeSceneContainer" class="absolute inset-0 w-full h-full pointer-events-none z-0">
+      <canvas id="landing3dCanvas" class="w-full h-full block" aria-hidden="true"></canvas>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="relative z-10 w-full border-b border-[#1e242d] px-6 lg:px-12 py-4 flex items-center justify-between backdrop-blur-xs bg-[#0b0c0e]/80">
+      <!-- Brand Lockup -->
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-[#1e240e] border border-[#a3e635]/40 flex items-center justify-center shadow-[0_0_15px_rgba(163,230,53,0.2)]">
+          <i data-lucide="shield-check" class="w-5 h-5 text-[#a3e635]"></i>
+        </div>
+        <div>
+          <span class="text-sm font-extrabold tracking-tight text-white font-sans">TALENTRANK AI</span>
+          <span class="ml-2 font-mono text-[10px] text-[#a3e635] bg-[#1e240e] px-1.5 py-0.5 rounded border border-[#a3e635]/30">v2.4-PROD</span>
+        </div>
+      </div>
+
+      <!-- Real-time Status Chips -->
+      <div class="flex items-center space-x-3">
+        <div class="status-chip status-chip-lime hidden sm:inline-flex">
+          <span class="pulse-dot-lime"></span>
+          <span id="landingChipStatus">SYSTEM ONLINE</span>
+        </div>
+        <div class="status-chip hidden md:inline-flex">
+          <span id="landingChipProtocol">⚡ LOCAL :8000</span>
+        </div>
+        <div class="status-chip status-chip-lime">
+          <span class="pulse-dot-lime"></span>
+          <span id="landingChipLatency">--ms LATENCY</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area: Split Desktop / Stacked Mobile -->
+    <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-6 lg:px-12 py-8 flex flex-col lg:flex-row items-center justify-between gap-12">
+      <!-- Left Column: Headline, Monospace Chips & Narrative -->
+      <div class="w-full lg:w-1/2 space-y-6 text-left">
+        <!-- Monospace Tag Chip -->
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#1e240e] border border-[#a3e635]/40 text-[#bef264] text-[11px] font-mono uppercase tracking-wider">
+          <span class="pulse-dot-lime"></span>
+          <span>Next-Gen Multi-Agent ATS Intelligence</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08] font-sans">
+          Hire with <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] to-[#bef264]">evidence</span>,<br />not guesswork.
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-400 max-w-xl font-normal leading-relaxed">
+          Deep contextual resume evaluation powered by sentence transformers, PyMuPDF spatial bounds parsing, prompt-injection defense, and </p>
+
+        <!-- Feature Chips Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 max-w-lg font-mono text-[11px]">
+          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
+            <span class="text-[#a3e635]">▸</span>
+            <span class="text-slate-300">Resumes As Data</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
+            <span class="text-[#a3e635]">▸</span>
+            <span class="text-slate-300">5-Agent Pipeline</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
+            <span class="text-[#a3e635]">▸</span>
+            <span class="text-slate-300">Zero Injection</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
+            <span class="text-[#a3e635]">▸</span>
+            <span class="text-slate-300">EEOC 4/5ths Rule</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
+            <span class="text-[#a3e635]">▸</span>
+            <span class="text-slate-300">Bulk ZIP Ingestion</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[#121418]/90 border border-[#1e242d] flex items-center space-x-2">
+            <span class="text-[#a3e635]">▸</span>
+            <span class="text-slate-300">Dense MiniLM-L6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Glass Sign-In Card -->
+      <div class="w-full lg:w-[420px] shrink-0">
+        <div class="relative rounded-2xl bg-[#121418]/95 border border-[#1e242d] hover:border-[#a3e635]/40 transition-all duration-300 p-7 shadow-2xl backdrop-blur-md space-y-5">
+          <!-- Card Header -->
+          <div class="border-b border-[#1e242d] pb-4">
+            <div class="flex items-center space-x-2 mb-1.5">
+              <span class="w-2 h-2 rounded-full bg-[#a3e635]"></span>
+              <span class="text-[11px] font-mono uppercase text-[#a3e635] tracking-widest font-bold">SECURE AUTHENTICATION</span>
+            </div>
+            <h2 class="text-lg font-bold text-white tracking-tight">Recruiter Sign In</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Candidate data and screenings are isolated per recruiter profile.</p>
+          </div>
+
+          <!-- Alert Container for Errors -->
+          <div id="landingAuthAlert" class="hidden p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs"></div>
+
+          <!-- Form Fields -->
+          <div class="space-y-4 text-xs">
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1.5 font-mono text-[11px] uppercase tracking-wider">Corporate Email</label>
+              <input id="landingEmail" type="email" value="recruiter@talentrank.ai" class="w-full bg-[#0b0c0e] border border-[#2a323d] rounded-xl px-3.5 py-2.5 text-slate-100 focus:outline-none focus:border-[#a3e635] transition font-sans" placeholder="recruiter@company.com" />
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="block text-slate-300 font-semibold font-mono text-[11px] uppercase tracking-wider">Password</label>
+                <button type="button" onclick="togglePasswordVisibility('landingPassword', 'btnTogglePwdIcon')" class="text-[10px] text-slate-400 hover:text-[#a3e635] transition font-mono flex items-center space-x-1">
+                  <span id="btnTogglePwdIcon">Show</span>
+                </button>
+              </div>
+              <input id="landingPassword" type="password" value="admin123" class="w-full bg-[#0b0c0e] border border-[#2a323d] rounded-xl px-3.5 py-2.5 text-slate-100 focus:outline-none focus:border-[#a3e635] transition font-sans" placeholder="Enter password" />
+            </div>
+
+            <div class="p-3 rounded-xl bg-[#1e240e]/60 border border-[#a3e635]/25 text-[#bef264] text-[11px] leading-relaxed font-sans">
+              <strong>Enterprise Workspace:</strong> Default demo credentials provided. Your session isolation tokens are generated on sign-in.
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="space-y-2 pt-2">
+            <button id="btnLandingSignIn" onclick="handleLandingSignIn()" class="w-full py-2.5 rounded-xl bg-[#a3e635] hover:bg-[#bef264] text-slate-950 font-bold text-xs shadow-[0_0_20px_rgba(163,230,53,0.3)] transition flex items-center justify-center space-x-2 cursor-pointer">
+              <span>Sign In to Dashboard</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-slate-950"></i>
+            </button>
+            <button onclick="enterDemoDirectly()" class="w-full py-2 rounded-xl bg-[#16191f] hover:bg-[#1e242d] border border-[#2a323d] text-slate-300 font-medium text-xs transition">
+              Explore Live Demo As Jordan Davis
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Footer Row with Latency & 3D Pause Control -->
+    <footer class="relative z-10 w-full border-t border-[#1e242d] px-6 lg:px-12 py-3 flex items-center justify-between text-xs text-slate-500 backdrop-blur-xs bg-[#0b0c0e]/80">
+      
+
+      <div class="flex items-center space-x-4">
+        <!-- Pause 3D Button -->
+        <button id="btnPause3d" onclick="togglePause3d()" class="px-3 py-1 rounded-lg bg-[#16191f] hover:bg-[#1e242d] border border-[#2a323d] text-slate-300 text-[11px] font-mono flex items-center space-x-1.5 transition">
+          <i data-lucide="pause" class="w-3 h-3 text-[#a3e635]"></i>
+          <span id="btnPause3dText">PAUSE 3D</span>
+        </button>
+      </div>
+    </footer>
+  </section>
+
 
   <!-- ==================== TOP NAVIGATION BAR ==================== -->
   <header class="sticky top-0 z-40 w-full bg-white border-b border-slate-200 px-4 lg:px-8 py-3.5 flex items-center justify-between shadow-xs">
@@ -146,88 +363,56 @@
           <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2 px-3">
             Core Workspace
           </div>
-          <nav class="space-y-1 text-xs font-medium">
-            <button onclick="switchTab('overview')" id="tabBtn-overview" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition font-semibold text-brand-700 bg-brand-50 border border-brand-200 shadow-xs">
-              <i data-lucide="layout-dashboard" class="w-4 h-4 text-brand-600"></i>
-              <span>Overview</span>
+          <div class="px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-[#a3e635]">
+            Workspace
+          </div>
+          <nav class="space-y-1.5 text-xs font-medium">
+            <button onclick="switchTab('overview')" id="tabBtn-overview" class="sidebar-nav-btn sidebar-nav-btn-active">
+              <i data-lucide="layout-dashboard" class="w-4 h-4 text-[#a3e635] shrink-0"></i>
+              <span class="truncate">Overview</span>
             </button>
-            <button onclick="switchTab('screening')" id="tabBtn-screening" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-              <i data-lucide="scan-search" class="w-4 h-4 text-emerald-600"></i>
-              <span>AI Resume Screening</span>
-              <span class="ml-auto px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-emerald-100 text-emerald-700">AI</span>
+            <button onclick="switchTab('screening')" id="tabBtn-screening" class="sidebar-nav-btn sidebar-nav-btn-inactive">
+              <i data-lucide="scan-search" class="w-4 h-4 text-[#a3e635] shrink-0"></i>
+              <span class="truncate">AI Resume Screening</span>
+              <span class="ml-auto px-2 py-0.5 text-[9px] font-mono font-bold rounded-full bg-[#1e240e] text-[#a3e635] border border-[#a3e635]/30 shrink-0">AI</span>
             </button>
-            <button onclick="switchTab('history')" id="tabBtn-history" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-              <i data-lucide="history" class="w-4 h-4 text-purple-600"></i>
-              <span>Screening History</span>
-              <span class="ml-auto px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-purple-100 text-purple-700">DB</span>
+            <button onclick="switchTab('history')" id="tabBtn-history" class="sidebar-nav-btn sidebar-nav-btn-inactive">
+              <i data-lucide="history" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span class="truncate">Screening History</span>
+              <span class="ml-auto px-2 py-0.5 text-[9px] font-mono font-bold rounded-full bg-purple-950/60 text-purple-300 border border-purple-500/30 shrink-0">DB</span>
             </button>
-            <button onclick="switchTab('candidates')" id="tabBtn-candidates" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-              <i data-lucide="users" class="w-4 h-4 text-brand-600"></i>
-              <span>Candidates Pipeline</span>
-              <span id="badgeCandidateCount" class="ml-auto px-1.5 py-0.2 text-[10px] font-semibold rounded bg-slate-100 text-slate-600">15</span>
+            <button onclick="switchTab('candidates')" id="tabBtn-candidates" class="sidebar-nav-btn sidebar-nav-btn-inactive">
+              <i data-lucide="users" class="w-4 h-4 text-sky-400 shrink-0"></i>
+              <span class="truncate">Candidates Pipeline</span>
+              <span id="badgeCandidateCount" class="ml-auto px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-[#16191f] text-slate-300 border border-[#2a323d] shrink-0">15</span>
             </button>
           </nav>
         </div>
 
         <div>
-          <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2 px-3">
-            Intelligence & Auditing
+          <div class="px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500">
+            Intelligence
           </div>
-          <nav class="space-y-1 text-xs font-medium">
-            <button onclick="switchTab('ai-models')" id="tabBtn-ai-models" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-              <i data-lucide="cpu" class="w-4 h-4 text-purple-600"></i>
-              <span>AI Models Registry & Weights</span>
+          <nav class="space-y-1.5 text-xs font-medium">
+            <button onclick="switchTab('ai-models')" id="tabBtn-ai-models" class="sidebar-nav-btn sidebar-nav-btn-inactive">
+              <i data-lucide="cpu" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span class="truncate">AI Models Registry</span>
             </button>
-            <button onclick="switchTab('fairness')" id="tabBtn-fairness" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-              <i data-lucide="shield-check" class="w-4 h-4 text-sky-600"></i>
-              <span>Responsible AI Audit</span>
-              <span class="ml-auto px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-sky-100 text-sky-700">NYC LL144</span>
+            <button onclick="switchTab('analytics')" id="tabBtn-analytics" class="sidebar-nav-btn sidebar-nav-btn-inactive">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <span class="truncate">Analytics & Funnel</span>
             </button>
-            <button onclick="switchTab('analytics')" id="tabBtn-analytics" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-              <i data-lucide="bar-chart-3" class="w-4 h-4 text-amber-600"></i>
-              <span>Analytics & Funnel</span>
+            <button onclick="switchTab('reports')" id="tabBtn-reports" class="sidebar-nav-btn sidebar-nav-btn-inactive">
+              <i data-lucide="file-text" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+              <span class="truncate">Executive Reports</span>
             </button>
-            <button onclick="switchTab('reports')" id="tabBtn-reports" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-              <i data-lucide="file-text" class="w-4 h-4 text-rose-600"></i>
-              <span>Executive Reports</span>
-            </button>
-            <button onclick="switchTab('settings')" id="tabBtn-settings" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-              <i data-lucide="sliders" class="w-4 h-4 text-slate-600"></i>
-              <span>Platform Settings</span>
+            <button onclick="switchTab('settings')" id="tabBtn-settings" class="sidebar-nav-btn sidebar-nav-btn-inactive">
+              <i data-lucide="sliders" class="w-4 h-4 text-slate-400 shrink-0"></i>
+              <span class="truncate">Platform Settings</span>
             </button>
           </nav>
         </div>
-      </div>
-
-      <!-- Connected Models Status Widget -->
-      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2.5">
-        <div class="flex items-center justify-between">
-          <span class="font-bold text-slate-800 flex items-center space-x-1.5">
-            <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-600"></i>
-            <span>Connected Models</span>
-          </span>
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Online</span>
-        </div>
-        <div class="space-y-1.5 font-mono text-[10px] text-slate-600">
-          <div class="flex items-center justify-between">
-            <span class="truncate">MiniLM-L6-v2</span>
-            <span class="font-bold text-brand-600">384-dim</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <span>Archive 456 Tech:</span>
-            <span class="font-bold text-emerald-600">99.48% Acc</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <span>Archive 2 Enterprise:</span>
-            <span class="font-bold text-purple-600">84.60% Acc</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <span>Archive 123 PDF:</span>
-            <span class="font-bold text-sky-600">24 Classes</span>
-          </div>
-        </div>
-      </div>
-    </aside>
+      </aside>
 
     <!-- ==================== MAIN CONTENT AREA (CLEAN WHITE) ==================== -->
     <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8 bg-slate-50">
@@ -369,10 +554,7 @@
         <!-- Header & Subnav Pills -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <div class="flex items-center space-x-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">AI Screening Suite</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-mono text-slate-500 bg-slate-100 border border-slate-200">SQLite + MiniLM-L6-v2 + PyTorch</span>
-            </div>
+            
             <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight mt-1">Automated AI Resume Screening</h1>
             <p class="text-xs text-slate-500 mt-0.5">Upload PDF/DOCX resumes, parse candidate profiles, score against job criteria, and review decisions.</p>
           </div>
@@ -1047,51 +1229,7 @@
       </section>
 
       <!-- ==================== VIEW 5: FAIRNESS & NYC LL144 AUDIT ==================== -->
-      <section id="view-fairness" class="hidden space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Responsible AI & Demographic Parity Center</h1>
-            <p class="text-xs text-slate-500 mt-1">Algorithmic explainability, NYC Local Law 144 compliance, and EEOC 4/5ths Rule auditing.</p>
-          </div>
-          <div class="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center space-x-1.5">
-            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
-            <span>NYC LL144 Certified</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="white-card p-5 rounded-2xl space-y-2">
-            <div class="text-xs text-slate-500 font-medium">Demographic Parity Difference (DPD)</div>
-            <div class="text-2xl font-extrabold text-slate-900 font-mono">0.038</div>
-            <div class="text-[11px] text-emerald-600 font-semibold">Within strict legal boundary (&lt; 0.10)</div>
-          </div>
-          <div class="white-card p-5 rounded-2xl space-y-2">
-            <div class="text-xs text-slate-500 font-medium">Disparate Impact Ratio (4/5ths Rule)</div>
-            <div class="text-2xl font-extrabold text-slate-900 font-mono">0.914</div>
-            <div class="text-[11px] text-emerald-600 font-semibold">Well above EEOC minimum (0.80)</div>
-          </div>
-          <div class="white-card p-5 rounded-2xl space-y-2">
-            <div class="text-xs text-slate-500 font-medium">Protected Attribute Weight</div>
-            <div class="text-2xl font-extrabold text-slate-900 font-mono">0.000%</div>
-            <div class="text-[11px] text-slate-500 font-semibold">Completely decoupled from scoring</div>
-          </div>
-        </div>
-
-        <div class="white-card p-6 rounded-2xl space-y-4">
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
-              <i data-lucide="award" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h3 class="text-sm font-bold text-slate-900">NYC Local Law 144 Annual Bias Audit Certificate</h3>
-              <p class="text-xs text-slate-500">Automated Employment Decision Tool (AEDT) Compliance Verification</p>
-            </div>
-          </div>
-          <p class="text-xs text-slate-600 leading-relaxed">
-            This certifies that the algorithmic selection engines utilized by TalentRank AI operate in full compliance with EEOC guidelines and NYC Local Law 144. Scoring formulas rely strictly on verified technical skill overlap, dense contextual semantics, and verifiable production experience.
-          </p>
-        </div>
-      </section>
+      
 
       <!-- ==================== VIEW 6: ANALYTICS & FUNNEL ==================== -->
       <section id="view-analytics" class="hidden space-y-6">
@@ -1241,7 +1379,7 @@
               <i data-lucide="lock" class="w-4 h-4 text-purple-600"></i>
               <span>Compliance Automation & EEOC Auditing</span>
             </h2>
-            <p class="text-[11px] text-slate-500 mt-0.5">Schedule recurring demographic disparity audits for NYC Local Law 144 compliance.</p>
+            <p class="text-[11px] text-slate-500 mt-0.5">Schedule recurring demographic disparity audits for </p>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -1449,7 +1587,7 @@
     // Tab Switcher
     function switchTab(tabId) {
       state.activeTab = tabId;
-      const tabs = ['overview', 'screening', 'history', 'candidates', 'ai-models', 'fairness', 'analytics', 'reports', 'settings'];
+      const tabs = ['overview', 'screening', 'history', 'candidates', 'ai-models', 'analytics', 'reports', 'settings'];
       tabs.forEach(t => {
         const view = document.getElementById(`view-${t}`);
         const btn = document.getElementById(`tabBtn-${t}`);
@@ -2913,6 +3051,447 @@
       }
     }
 
+    
+        // =========================================================================
+    // 100% OFFLINE 3D WIREFRAME ICOSAHEDRON ENGINE (ZERO CDN DEPENDENCIES)
+    // =========================================================================
+    let canvas3D, ctx3D;
+    let animFrame3D = null;
+    let is3dPaused = false;
+    let rotX = 0.25, rotY = 0.45;
+    let targetRotX = 0.25, targetRotY = 0.45;
+    let zoomFactor = 1.0, targetZoomFactor = 1.0;
+    let particles3D = [];
+    let stars3D = [];
+
+    // Icosahedron 12 vertices using Golden Ratio phi
+    const phi = (1 + Math.sqrt(5)) / 2;
+    const baseVertices = [
+      [-1,  phi, 0], [ 1,  phi, 0], [-1, -phi, 0], [ 1, -phi, 0],
+      [ 0, -1,  phi], [ 0,  1,  phi], [ 0, -1, -phi], [ 0,  1, -phi],
+      [ phi, 0, -1], [ phi, 0,  1], [-phi, 0, -1], [-phi, 0,  1]
+    ].map(v => {
+      const len = Math.hypot(v[0], v[1], v[2]);
+      return [v[0] / len, v[1] / len, v[2] / len];
+    });
+
+    // 30 edges connecting adjacent icosahedron vertices (distance ~ 1.05)
+    const icosahedronEdges = [];
+    for (let i = 0; i < baseVertices.length; i++) {
+      for (let j = i + 1; j < baseVertices.length; j++) {
+        const dx = baseVertices[i][0] - baseVertices[j][0];
+        const dy = baseVertices[i][1] - baseVertices[j][1];
+        const dz = baseVertices[i][2] - baseVertices[j][2];
+        const dist = Math.hypot(dx, dy, dz);
+        if (dist > 0.95 && dist < 1.15) {
+          icosahedronEdges.push([i, j]);
+        }
+      }
+    }
+
+    // 3 Tilted Orbit Rings configuration
+    const orbitRingsData = [
+      { radius: 1.55, tiltX: 1.15, tiltY: 0.35, speed: 0.016, angle: 0 },
+      { radius: 1.85, tiltX: -0.75, tiltY: 0.75, speed: -0.012, angle: Math.PI / 2 },
+      { radius: 2.15, tiltX: 0.45, tiltY: -0.65, speed: 0.014, angle: Math.PI }
+    ];
+
+    function init3DScene() {
+      canvas3D = document.getElementById('landing3dCanvas');
+      if (!canvas3D) return;
+      ctx3D = canvas3D.getContext('2d');
+      if (!ctx3D) return;
+
+      // Handle prefers-reduced-motion & saved localStorage
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (localStorage.getItem('talentrank_pause_3d') === 'true' || prefersReduced) {
+        is3dPaused = true;
+        updatePauseButtonState();
+      }
+
+      resizeCanvas3D();
+      window.addEventListener('resize', resizeCanvas3D);
+
+      // Generate Background Starfield
+      stars3D = [];
+      const starCount = window.innerWidth < 768 ? 160 : 350;
+      for (let i = 0; i < starCount; i++) {
+        stars3D.push({
+          x: Math.random(),
+          y: Math.random(),
+          size: Math.random() * 1.5 + 0.5,
+          alpha: Math.random() * 0.7 + 0.2,
+          speed: Math.random() * 0.02 + 0.01
+        });
+      }
+
+      // Parallax listeners
+      window.addEventListener('mousemove', (e) => {
+        const nx = (e.clientX / window.innerWidth) - 0.5;
+        const ny = (e.clientY / window.innerHeight) - 0.5;
+        targetRotY = 0.45 + nx * 0.55;
+        targetRotX = 0.25 + ny * 0.45;
+      }, { passive: true });
+
+      // Camera ease on input focus
+      const inputs = document.querySelectorAll('#landingEmail, #landingPassword');
+      inputs.forEach(inp => {
+        inp.addEventListener('focus', () => { targetZoomFactor = 1.18; });
+        inp.addEventListener('blur', () => { targetZoomFactor = 1.0; });
+      });
+
+      // Tab visibility pause
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && animFrame3D) {
+          cancelAnimationFrame(animFrame3D);
+        } else if (!document.hidden && !is3dPaused) {
+          draw3DLoop();
+        }
+      });
+
+      if (!is3dPaused) {
+        draw3DLoop();
+      } else {
+        render3DFrame();
+      }
+    }
+
+    function resizeCanvas3D() {
+      if (!canvas3D) return;
+      const rect = canvas3D.parentElement.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas3D.width = rect.width * dpr;
+      canvas3D.height = rect.height * dpr;
+      if (is3dPaused) render3DFrame();
+    }
+
+    function draw3DLoop() {
+      if (is3dPaused) return;
+      render3DFrame();
+      animFrame3D = requestAnimationFrame(draw3DLoop);
+    }
+
+    function render3DFrame() {
+      if (!ctx3D || !canvas3D) return;
+      const w = canvas3D.width;
+      const h = canvas3D.height;
+      if (!w || !h) return;
+
+      ctx3D.clearRect(0, 0, w, h);
+
+      // 1. Draw Starfield
+      stars3D.forEach(st => {
+        st.alpha += Math.sin(performance.now() * 0.002 * st.speed) * 0.01;
+        ctx3D.fillStyle = `rgba(163, 230, 53, ${Math.max(0.1, Math.min(0.85, st.alpha))})`;
+        ctx3D.beginPath();
+        ctx3D.arc(st.x * w, st.y * h, st.size, 0, Math.PI * 2);
+        ctx3D.fill();
+      });
+
+      // Update rotation & zoom ease
+      rotY += (targetRotY - rotY) * 0.05 + 0.003;
+      rotX += (targetRotX - rotX) * 0.05 + 0.0015;
+      zoomFactor += (targetZoomFactor - zoomFactor) * 0.06;
+
+      const cx = w * (window.innerWidth < 1024 ? 0.5 : 0.32);
+      const cy = h * (window.innerWidth < 1024 ? 0.35 : 0.5);
+      const baseScale = Math.min(w, h) * 0.28 * zoomFactor;
+
+      // 2. Inner Glowing Core
+      const grad = ctx3D.createRadialGradient(cx, cy, 10, cx, cy, baseScale * 0.85);
+      grad.addColorStop(0, 'rgba(77, 90, 26, 0.45)');
+      grad.addColorStop(0.55, 'rgba(30, 36, 14, 0.28)');
+      grad.addColorStop(1, 'rgba(11, 12, 14, 0)');
+      ctx3D.fillStyle = grad;
+      ctx3D.beginPath();
+      ctx3D.arc(cx, cy, baseScale * 0.88, 0, Math.PI * 2);
+      ctx3D.fill();
+
+      // Helper 3D rotation
+      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+
+      function project3D(x, y, z) {
+        // Rotate Y
+        const x1 = x * cosY - z * sinY;
+        const z1 = x * sinY + z * cosY;
+        // Rotate X
+        const y2 = y * cosX - z1 * sinX;
+        const z2 = y * sinX + z1 * cosX;
+        // Perspective Division
+        const dist = 3.6;
+        const pz = z2 + dist;
+        const px = (x1 / pz) * baseScale + cx;
+        const py = (y2 / pz) * baseScale + cy;
+        return { px, py, pz, z2 };
+      }
+
+      // 3. Project & Draw Icosahedron Wireframe
+      const projected = baseVertices.map(v => project3D(v[0], v[1], v[2]));
+
+      ctx3D.save();
+      ctx3D.lineWidth = 1.6;
+      ctx3D.shadowColor = '#a3e635';
+      ctx3D.shadowBlur = 10;
+
+      icosahedronEdges.forEach(([i, j]) => {
+        const p1 = projected[i];
+        const p2 = projected[j];
+        // Calculate edge depth for realistic z-fade
+        const avgZ = (p1.z2 + p2.z2) * 0.5;
+        const alpha = Math.max(0.18, Math.min(0.85, 0.55 + avgZ * 0.35));
+
+        ctx3D.strokeStyle = `rgba(163, 230, 53, ${alpha})`;
+        ctx3D.beginPath();
+        ctx3D.moveTo(p1.px, p1.py);
+        ctx3D.lineTo(p2.px, p2.py);
+        ctx3D.stroke();
+      });
+      ctx3D.restore();
+
+      // Draw subtle vertex points
+      projected.forEach(p => {
+        const ptAlpha = Math.max(0.3, Math.min(0.9, 0.6 + p.z2 * 0.4));
+        ctx3D.fillStyle = `rgba(190, 242, 100, ${ptAlpha})`;
+        ctx3D.beginPath();
+        ctx3D.arc(p.px, p.py, 2.5, 0, Math.PI * 2);
+        ctx3D.fill();
+      });
+
+      // 4. Draw 3 Tilted Orbit Rings & Traveling Glowing Particles
+      orbitRingsData.forEach(ring => {
+        ring.angle += ring.speed;
+        const segs = 72;
+        const ringPts = [];
+        const cosTX = Math.cos(ring.tiltX), sinTX = Math.sin(ring.tiltX);
+        const cosTY = Math.cos(ring.tiltY), sinTY = Math.sin(ring.tiltY);
+
+        for (let s = 0; s <= segs; s++) {
+          const a = (s / segs) * Math.PI * 2;
+          const rx = Math.cos(a) * ring.radius;
+          const ry = Math.sin(a) * ring.radius * 0.88;
+          // Apply tilt
+          const tx = rx * cosTY - ry * sinTY * 0.5;
+          const ty = rx * sinTX * 0.5 + ry * cosTX;
+          const tz = ry * sinTX;
+          ringPts.push(project3D(tx, ty, tz));
+        }
+
+        ctx3D.save();
+        ctx3D.strokeStyle = 'rgba(77, 90, 26, 0.42)';
+        ctx3D.lineWidth = 1.0;
+        ctx3D.beginPath();
+        ringPts.forEach((pt, idx) => {
+          if (idx === 0) ctx3D.moveTo(pt.px, pt.py);
+          else ctx3D.lineTo(pt.px, pt.py);
+        });
+        ctx3D.stroke();
+        ctx3D.restore();
+
+        // Traveling Particle on this ring
+        const px = Math.cos(ring.angle) * ring.radius;
+        const py = Math.sin(ring.angle) * ring.radius * 0.88;
+        const tx = px * cosTY - py * sinTY * 0.5;
+        const ty = px * sinTX * 0.5 + py * cosTX;
+        const tz = py * sinTX;
+        const partPt = project3D(tx, ty, tz);
+
+        ctx3D.save();
+        ctx3D.fillStyle = '#a3e635';
+        ctx3D.shadowColor = '#a3e635';
+        ctx3D.shadowBlur = 12;
+        ctx3D.beginPath();
+        ctx3D.arc(partPt.px, partPt.py, 3.8, 0, Math.PI * 2);
+        ctx3D.fill();
+        ctx3D.restore();
+      });
+    }
+
+    function togglePause3d() {
+      is3dPaused = !is3dPaused;
+      localStorage.setItem('talentrank_pause_3d', is3dPaused ? 'true' : 'false');
+      updatePauseButtonState();
+      if (!is3dPaused) {
+        draw3DLoop();
+      } else if (animFrame3D) {
+        cancelAnimationFrame(animFrame3D);
+      }
+    }
+
+    function updatePauseButtonState() {
+      const btn = document.getElementById('btnPause3dText');
+      if (btn) {
+        btn.textContent = is3dPaused ? 'RESUME 3D' : 'PAUSE 3D';
+      }
+    }
+
+    function enterDemoDirectly() {
+      targetZoomFactor = 1.8;
+      setTimeout(() => {
+        document.getElementById('view-landing-auth').classList.add('hidden');
+        switchTab('overview');
+        loadData();
+      }, 250);
+    }
+
+    function openLandingAuthView() {
+      document.getElementById('view-landing-auth').classList.remove('hidden');
+      targetZoomFactor = 1.0;
+      if (is3dPaused) render3DFrame();
+    }
+
+    // Toggle Password Visibility
+    function togglePasswordVisibility(inputId, toggleTextId) {
+      const inp = document.getElementById(inputId);
+      const txt = document.getElementById(toggleTextId);
+      if (!inp) return;
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        if (txt) txt.textContent = 'Hide';
+      } else {
+        inp.type = 'password';
+        if (txt) txt.textContent = 'Show';
+      }
+    }
+
+    // Real System Health & Latency Measurement
+    async function measureRealSystemHealth() {
+      const t0 = performance.now();
+      try {
+        const protocolEl = document.getElementById('landingChipProtocol');
+        if (protocolEl) {
+          protocolEl.textContent = window.location.protocol === 'https:' ? '🔒 SECURE (HTTPS)' : '⚡ DEV INSTANCE (:8000)';
+        }
+
+        const res = await fetch(`${BASE_URL}/api/screening/jobs?recruiter_id=recruiter-default`, { cache: 'no-store' });
+        const latency = Math.round(performance.now() - t0);
+
+        const statusEl = document.getElementById('landingChipStatus');
+        const latencyEl = document.getElementById('landingChipLatency');
+        const footerLatEl = document.getElementById('landingFooterLatency');
+
+        if (res.ok) {
+          if (statusEl) statusEl.textContent = 'SYSTEM ONLINE';
+          if (latencyEl) latencyEl.textContent = `${latency}ms LATENCY`;
+          if (footerLatEl) footerLatEl.textContent = `${latency}ms`;
+        } else {
+          if (statusEl) statusEl.textContent = 'DEGRADED';
+          if (latencyEl) latencyEl.textContent = `${latency}ms`;
+        }
+      } catch (err) {
+        const statusEl = document.getElementById('landingChipStatus');
+        if (statusEl) statusEl.textContent = 'OFFLINE';
+      }
+    }
+
+    // Landing Sign-in Handler
+    async function handleLandingSignIn() {
+      const email = document.getElementById('landingEmail').value.trim();
+      const password = document.getElementById('landingPassword').value;
+      const alertEl = document.getElementById('landingAuthAlert');
+      const btn = document.getElementById('btnLandingSignIn');
+
+      if (!email || !password) {
+        alertEl.textContent = 'Please enter both corporate email and password.';
+        alertEl.classList.remove('hidden');
+        return;
+      }
+
+      alertEl.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-slate-950"></i><span>Authenticating...</span>';
+      lucide.createIcons();
+
+      try {
+        const res = await fetch(`${BASE_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || 'Invalid email or password');
+        }
+
+        const data = await res.json();
+        state.recruiterId = data.recruiter.id;
+        state.recruiterName = data.recruiter.name;
+        localStorage.setItem('talentrank_authenticated', 'true');
+        localStorage.setItem('talentrank_recruiter_id', data.recruiter.id);
+
+        // Smooth camera zoom transition into dashboard
+        targetCameraZ = 1.6;
+        setTimeout(() => {
+          document.getElementById('view-landing-auth').classList.add('hidden');
+          switchTab('overview');
+          loadData();
+        }, 380);
+
+      } catch (err) {
+        alertEl.textContent = err.message || 'Authentication failed. Please verify credentials.';
+        alertEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Sign In to Dashboard</span><i data-lucide="arrow-right" class="w-4 h-4 text-slate-950"></i>';
+        lucide.createIcons();
+      }
+    }
+
+    function enterDemoDirectly() {
+      targetCameraZ = 1.6;
+      setTimeout(() => {
+        document.getElementById('view-landing-auth').classList.add('hidden');
+        switchTab('overview');
+        loadData();
+      }, 300);
+    }
+
+    function openLandingAuthView() {
+      document.getElementById('view-landing-auth').classList.remove('hidden');
+      targetCameraZ = 5.0;
+      if (!threeScene) init3DScene();
+    }
+
+    
+    async function runJdBiasAnalysis() {
+      const text = document.getElementById('jdBiasInputText').value.trim();
+      const btn = document.getElementById('btnAnalyzeJdBias');
+      if (!text) return;
+
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Analyzing...</span>';
+      lucide.createIcons();
+
+      try {
+        const res = await fetch(`${BASE_URL}/api/fairness/analyze-jd`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('jdNeutralityScore').textContent = `${data.neutrality_score}%`;
+          document.getElementById('jdNeutralityBar').style.width = `${data.neutrality_score}%`;
+          
+          const masc = data.masculine_coded_words || [];
+          document.getElementById('jdMascTerms').textContent = masc.length ? masc.join(', ') : 'None detected (0)';
+          
+          const fem = data.feminine_coded_words || [];
+          document.getElementById('jdFemTerms').textContent = fem.length ? fem.join(', ') : 'None detected (0)';
+          
+          document.getElementById('jdAssessment').textContent = data.bias_verdict || 'Strongly Neutral & Inclusive';
+        }
+      } catch (err) {
+        console.warn('Error analyzing JD bias:', err);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="zap" class="w-3.5 h-3.5 text-slate-950"></i><span>Audit Description Bias</span>';
+        lucide.createIcons();
+      }
+    }
+
     async function loadData() {
       try {
         const [candRes, jobsRes, anaRes] = await Promise.all([
@@ -3006,10 +3585,25 @@
 
       list.forEach((c, idx) => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 transition';
+        tr.className = 'hover:bg-[#16191f] transition border-b border-[#1e242d]';
 
         const isChecked = state.selectedCompareIds.has(c.candidate_id || c.id);
-        const domain = c.predicted_tech_role || (c.ai_model_predictions?.archive_456_tech?.[0]?.category) || 'Software Engineer';
+        const domain = c.job_title || c.title || c.predicted_tech_role || 'Distributed Systems';
+        const candName = c.candidate_name || c.name || 'Candidate';
+        const candEmail = c.candidate_email || c.email || 'applicant@talentrank.ai';
+        const score = c.score !== undefined ? c.score : (c.overall_score || 0);
+        const isFraud = c.is_fraud || c.status === 'FRAUD';
+
+        let statusBadge = '';
+        if (isFraud) {
+          statusBadge = '<span class="status-badge status-fraud font-mono text-[10px]">🚨 FRAUD</span>';
+        } else if (score >= 70 || c.status === 'Selected') {
+          statusBadge = '<span class="status-badge status-selected font-mono text-[10px]">✓ Selected</span>';
+        } else if (score >= 50 || c.status === 'Maybe') {
+          statusBadge = '<span class="status-badge status-maybe font-mono text-[10px]">? Maybe</span>';
+        } else {
+          statusBadge = '<span class="status-badge status-rejected font-mono text-[10px]">✕ Rejected</span>';
+        }
 
         tr.innerHTML = `
           <td class="p-3.5 text-center">
@@ -3278,10 +3872,19 @@
     }
 
     // Chart.js Initializers (Clean Light Theme)
+        let chartActivity = null;
+    let chartMatch = null;
+    let chartScatter = null;
+
     function initCharts() {
+      // Clean up previous Chart instances before re-rendering
+      if (chartActivity) { try { chartActivity.destroy(); } catch(e){} chartActivity = null; }
+      if (chartMatch) { try { chartMatch.destroy(); } catch(e){} chartMatch = null; }
+      if (chartScatter) { try { chartScatter.destroy(); } catch(e){} chartScatter = null; }
+
       const ctx1 = document.getElementById('screeningActivityChart');
       if (ctx1) {
-        new Chart(ctx1, {
+        chartActivity = new Chart(ctx1, {
           type: 'line',
           data: {
             labels: ['Nov 03', 'Nov 05', 'Nov 07', 'Nov 09', 'Nov 11', 'Nov 13', 'Nov 15', 'Nov 16'],
@@ -3289,15 +3892,15 @@
               {
                 label: 'Screened Resumes',
                 data: [12, 18, 24, 19, 28, 22, 31, 26],
-                borderColor: '#2563eb',
-                backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                borderColor: '#a3e635',
+                backgroundColor: 'rgba(163, 230, 53, 0.12)',
                 tension: 0.35,
                 fill: true
               },
               {
                 label: 'Shortlisted Fit',
                 data: [3, 5, 7, 4, 9, 6, 10, 8],
-                borderColor: '#10b981',
+                borderColor: '#65a30d',
                 backgroundColor: 'transparent',
                 tension: 0.35,
                 borderDash: [4, 4]
@@ -3309,8 +3912,8 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-              x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 10 } } },
-              y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 10 } } }
+              x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', font: { size: 10, family: 'monospace' } } },
+              y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', font: { size: 10, family: 'monospace' } } }
             }
           }
         });
@@ -3318,15 +3921,15 @@
 
       const ctx2 = document.getElementById('matchDistributionChart');
       if (ctx2) {
-        new Chart(ctx2, {
+        chartMatch = new Chart(ctx2, {
           type: 'doughnut',
           data: {
             labels: ['Exceptional', 'Strong', 'Moderate', 'Low'],
             datasets: [{
-              data: [5, 12, 18, 7],
-              backgroundColor: ['#2563eb', '#0ea5e9', '#f59e0b', '#cbd5e1'],
+              data: [8, 14, 18, 6],
+              backgroundColor: ['#a3e635', '#65a30d', '#ca8a04', '#334155'],
               borderWidth: 2,
-              borderColor: '#ffffff'
+              borderColor: '#121418'
             }]
           },
           options: {
@@ -3336,7 +3939,7 @@
             cutout: '72%'
           }
         });
-      }
+          }
 
       const ctx3 = document.getElementById('semanticScatterChart');
       if (ctx3) {
